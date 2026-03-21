@@ -1,0 +1,2114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Formulir Penghitungan Kebutuhan Arsiparis</title>
+<style>
+:root {
+  --win-bg:#ececec;--sidebar-bg:#f0f0f0;--content-bg:#f5f5f5;--card:#fff;
+  --bdr:rgba(0,0,0,.1);--sep:rgba(0,0,0,.07);--chrome:linear-gradient(to bottom,#e0e0e0,#d4d4d4);
+  --chrome-b:#b8b8b8;--tabbar:linear-gradient(to bottom,#e8e8e8,#dcdcdc);--tabbar-b:#b0b0b0;
+  --t1:#1c1c1e;--t2:#48484a;--t3:#8e8e93;
+  --accent:#0a7aff;--green:#28a745;--red:#d9534f;--orange:#f59e0b;
+  --row-h:rgba(0,0,0,.025);--row-s:#f4f4f5;--row-c:#f0faf5;
+  --sh:0 1px 3px rgba(0,0,0,.1),0 1px 2px rgba(0,0,0,.06);
+  --r4:4px;--r8:8px;--r12:12px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'Helvetica Neue',sans-serif;background:var(--win-bg);color:var(--t1);font-size:13px;height:100vh;overflow:hidden;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+
+/* ── CHROME ── */
+.chrome{height:50px;background:var(--chrome);border-bottom:1px solid var(--chrome-b);display:flex;align-items:center;padding:0 16px;gap:12px;position:relative;flex-shrink:0;box-shadow:0 1px 0 rgba(255,255,255,.45) inset}
+.tls{display:flex;gap:8px}
+.tl{width:12px;height:12px;border-radius:50%;box-shadow:0 0 0 .5px rgba(0,0,0,.18) inset;cursor:default}
+.tl-r{background:radial-gradient(circle at 40% 38%,#ff8077,#ff5f57)}
+.tl-y{background:radial-gradient(circle at 40% 38%,#ffd060,#febc2e)}
+.tl-g{background:radial-gradient(circle at 40% 38%,#5de46b,#28c840)}
+.win-title{position:absolute;left:50%;transform:translateX(-50%);font-size:13px;font-weight:600;color:var(--t3);pointer-events:none;white-space:nowrap}
+.chrome-r{margin-left:auto;display:flex;gap:6px;align-items:center}
+.tbtn{font-family:inherit;font-size:11.5px;font-weight:500;background:linear-gradient(to bottom,#fefefe,#f2f2f2);border:1px solid #bbb;border-radius:var(--r4);color:var(--t1);padding:4px 11px;cursor:pointer;display:flex;align-items:center;gap:4px;box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 1px 2px rgba(0,0,0,.1);white-space:nowrap;transition:background .1s}
+.tbtn:hover{background:linear-gradient(to bottom,#fff,#ebebeb)}
+.tbtn:active{transform:scale(.98)}
+.tbtn-p{background:linear-gradient(to bottom,#1a8fff,#0a7aff);border-color:#005fd6;color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.22) inset,0 1px 3px rgba(0,90,200,.3)}
+.tbtn-p:hover{background:linear-gradient(to bottom,#2a9fff,#1a8fff)}
+.tbtn-d{background:linear-gradient(to bottom,#f87171,#d9534f);border-color:#b22222;color:#fff}
+.tbtn-d:hover{background:linear-gradient(to bottom,#fc8888,#e05555)}
+.save-st{font-size:11px;color:var(--t3)}
+
+/* ── LAYOUT ── */
+.app{display:flex;flex:1;overflow:hidden}
+
+/* ── SIDEBAR ── */
+.sidebar{width:220px;flex-shrink:0;background:var(--sidebar-bg);border-right:1px solid rgba(0,0,0,.1);display:flex;flex-direction:column;overflow:hidden}
+.sb-header{padding:12px 12px 8px;border-bottom:1px solid var(--sep)}
+.sb-title{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3);margin-bottom:8px;padding:0 4px}
+.sb-nav-btn{display:flex;align-items:center;gap:8px;width:100%;padding:6px 8px;border:none;border-radius:var(--r8);font-family:inherit;font-size:13px;font-weight:400;color:var(--t2);background:none;cursor:pointer;text-align:left;transition:background .1s,color .1s;margin-bottom:2px}
+.sb-nav-btn:hover{background:rgba(0,0,0,.06);color:var(--t1)}
+.sb-nav-btn.active{background:var(--accent);color:#fff;font-weight:500}
+.sb-nav-btn.active .sb-ico{background:rgba(255,255,255,.2)!important}
+.sb-ico{width:22px;height:22px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0}
+.ico-b{background:rgba(10,122,255,.12)}.ico-g{background:rgba(40,167,69,.12)}.ico-o{background:rgba(245,158,11,.12)}
+
+/* unit list */
+.sb-units{flex:1;overflow-y:auto;padding:8px 12px}
+.sb-units-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.sb-units-label{font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)}
+.sb-add-btn{font-size:11px;font-weight:600;color:var(--accent);background:none;border:none;cursor:pointer;padding:2px 4px;border-radius:4px}
+.sb-add-btn:hover{background:rgba(10,122,255,.08)}
+.unit-item{display:flex;align-items:center;gap:6px;padding:6px 8px;border-radius:var(--r8);cursor:pointer;margin-bottom:2px;transition:background .1s;border:none;background:none;width:100%;text-align:left}
+.unit-item:hover{background:rgba(0,0,0,.055)}
+.unit-item.active{background:rgba(10,122,255,.1)}
+.unit-item.active .unit-name{color:var(--accent);font-weight:500}
+.unit-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-upuk{background:#7c3aed}.dot-up{background:#0369a1}
+.unit-name{font-size:12.5px;color:var(--t2);flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.unit-type{font-size:10px;font-weight:600;padding:1px 5px;border-radius:3px;flex-shrink:0}
+.type-upuk{background:#ede9fe;color:#6d28d9}.type-up{background:#e0f2fe;color:#0369a1}
+.sb-empty{font-size:12px;color:var(--t3);padding:8px 4px;font-style:italic}
+
+/* ── CONTENT ── */
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;background:var(--content-bg)}
+
+/* page switcher */
+.page{display:none;flex:1;flex-direction:column;overflow:hidden}
+.page.active{display:flex}
+
+/* ── UNIT HEADER BAR ── */
+.unit-hdr{background:linear-gradient(to bottom,#fafafa,#f4f4f4);border-bottom:1px solid var(--sep);padding:10px 20px;display:flex;align-items:center;gap:10px;flex-shrink:0}
+.unit-hdr-name{font-size:15px;font-weight:700;color:var(--t1);letter-spacing:-.015em}
+.unit-hdr-type{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px}
+.unit-hdr-edit{font-size:11.5px;color:var(--accent);background:none;border:none;cursor:pointer;margin-left:auto;padding:4px 8px;border-radius:var(--r4)}
+.unit-hdr-edit:hover{background:rgba(10,122,255,.08)}
+
+/* ── HORIZONTAL SECTION TABS ── */
+.sec-tabs{background:var(--tabbar);border-bottom:1px solid var(--tabbar-b);padding:0 20px;display:flex;gap:0;flex-shrink:0;box-shadow:0 1px 0 rgba(255,255,255,.5) inset}
+.sec-tab{font-size:12px;font-weight:500;color:var(--t3);background:none;border:none;border-bottom:2px solid transparent;padding:9px 14px;cursor:pointer;display:flex;align-items:center;gap:5px;transition:color .15s;white-space:nowrap}
+.sec-tab:hover{color:var(--t2)}
+.sec-tab.active{color:var(--accent);border-bottom-color:var(--accent);font-weight:600}
+
+/* ── SCROLL AREA ── */
+.sec-scroll{flex:1;overflow-y:auto;padding:20px 20px 80px}
+.section{display:none}.section.active{display:block}
+
+/* ── CARDS ── */
+.card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--r12);overflow:hidden;margin-bottom:14px;box-shadow:var(--sh)}
+.card-hdr{padding:10px 16px;border-bottom:1px solid var(--sep);display:flex;align-items:center;gap:8px;background:linear-gradient(to bottom,#fafafa,#f4f4f4)}
+.card-hdr h3{font-size:12.5px;font-weight:600;color:var(--t1)}
+.cpill{font-size:10px;font-weight:600;letter-spacing:.04em;background:rgba(10,122,255,.1);color:var(--accent);padding:2px 8px;border-radius:20px;margin-left:auto}
+
+/* ── LEGEND ── */
+.legend{display:flex;gap:14px;flex-wrap:wrap;padding:7px 16px;border-bottom:1px solid var(--sep);background:#fafafa}
+.leg{display:flex;align-items:center;gap:5px;font-size:11px;color:var(--t2)}
+.leg-d{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+
+/* ── TABLE ── */
+.tbl-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:12px}
+thead th{background:#f8f8f8;color:var(--t3);font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:8px 12px;text-align:left;border-bottom:1px solid rgba(0,0,0,.09);white-space:nowrap}
+thead th.r{text-align:right}
+tbody tr{border-bottom:1px solid rgba(0,0,0,.045)}
+tbody tr:not(.tr-sec):not(.tr-comp):nth-child(even) td{background:#f8f8fb}
+tbody tr:not(.tr-sec):not(.tr-comp):nth-child(odd) td{background:#ffffff}
+tbody tr:not(.tr-sec):not(.tr-comp):hover td{background:rgba(10,122,255,.04)!important}
+tbody tr:last-child{border-bottom:none}
+tbody tr:hover td{background:var(--row-h)}
+tbody td{padding:6px 12px;vertical-align:middle}
+.tr-sec td{background:var(--row-s)!important;color:var(--t3)!important;font-size:10px!important;font-weight:700!important;letter-spacing:.07em!important;text-transform:uppercase!important;padding:5px 12px!important;border-top:1px solid rgba(0,0,0,.07)!important}
+.tr-comp td{background:var(--row-c)!important}
+td.no{color:var(--t3);font-family:'SF Mono','Menlo',monospace;font-size:11px}
+td.no-c{color:var(--t3);font-size:11px;padding-left:22px!important}
+td.sat{color:var(--t3);font-size:11.5px}
+td.desc-c{color:var(--t3);font-size:11px}
+
+/* ── TAGS ── */
+.utag{display:inline-flex;align-items:center;font-size:10px;font-weight:600;letter-spacing:.03em;padding:2px 7px;border-radius:4px;white-space:nowrap}
+.u-up  {background:#e0f2fe;color:#0369a1;border:1px solid #bae6fd}
+.u-uk  {background:#f3e8ff;color:#7e22ce;border:1px solid #e9d5ff}
+.u-both{background:#dcfce7;color:#15803d;border:1px solid #bbf7d0}
+.u-none{background:#f3f4f6;color:#9ca3af;border:1px solid #e5e7eb}
+.jw{display:flex;flex-wrap:wrap;gap:3px}
+.jb{font-size:10px;font-weight:500;padding:1px 6px;border-radius:4px;white-space:nowrap}
+.jb-t{background:#dbeafe;color:#1d4ed8}.jb-m{background:#dcfce7;color:#15803d}
+.jb-p{background:#fef9c3;color:#a16207}.jb-ap{background:#fee2e2;color:#b91c1c}
+.jb-am{background:#ede9fe;color:#6d28d9}.jb-ad{background:#fef3c7;color:#92400e}
+.jb-au{background:#f0fdf4;color:#166534}
+
+/* ── INPUTS ── */
+.ni{width:96px;background:#fff;border:1px solid rgba(0,0,0,.2);border-radius:var(--r4);color:var(--t1);font-family:'SF Mono','Menlo',monospace;font-size:12px;text-align:right;padding:4px 8px;outline:none;box-shadow:0 1px 2px rgba(0,0,0,.06) inset;transition:border-color .15s,box-shadow .15s;display:block;margin-left:auto}
+.ni:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(10,122,255,.18),0 1px 2px rgba(0,0,0,.06) inset}
+.ni-c{background:#f0fdf7;border-color:#86efac;color:#15803d;font-weight:600;pointer-events:none}
+
+/* ── REKAP ── */
+.rk-cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(155px,1fr));gap:10px;padding:14px 16px}
+.rk-card{background:#fff;border:1px solid rgba(0,0,0,.09);border-radius:var(--r8);padding:12px 14px;box-shadow:0 1px 3px rgba(0,0,0,.06);transition:box-shadow .15s,transform .1s}
+.rk-card:hover{box-shadow:0 4px 12px rgba(0,0,0,.1);transform:translateY(-1px)}
+.rk-lbl{font-size:10px;font-weight:500;color:var(--t3);line-height:1.4}
+.rk-val{font-family:'SF Mono','Menlo',monospace;font-size:32px;font-weight:700;line-height:1;margin:5px 0 3px;letter-spacing:-.02em}
+.rk-sub{font-size:10px;color:var(--t3)}
+.rk-0 .rk-val{color:#0369a1}.rk-1 .rk-val{color:#15803d}.rk-2 .rk-val{color:#b45309}
+.rk-3 .rk-val{color:#b91c1c}.rk-4 .rk-val{color:#6d28d9}.rk-5 .rk-val{color:#a16207}.rk-6 .rk-val{color:#1e40af}
+.dtbl{padding:0 16px 16px}
+.dtbl table thead th{background:#fafafa}
+.dtbl table tbody td{color:var(--t2);border-bottom:1px solid rgba(0,0,0,.045)}
+td.mono{font-family:'SF Mono','Menlo',monospace;text-align:right;color:var(--t1)}
+td.acc{color:var(--accent);font-weight:700;font-family:'SF Mono','Menlo',monospace;text-align:right}
+.tfoot-tr td{border-top:1px solid rgba(0,0,0,.1)!important;font-weight:600;padding-top:9px!important}
+
+/* ── EMPTY STATE ── */
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:12px;color:var(--t3)}
+.empty-icon{font-size:48px;opacity:.4}
+.empty-title{font-size:15px;font-weight:600;color:var(--t2)}
+.empty-desc{font-size:12px;text-align:center;max-width:280px;line-height:1.6}
+.empty-btn{font-family:inherit;font-size:12.5px;font-weight:600;background:var(--accent);color:#fff;border:none;border-radius:var(--r8);padding:8px 18px;cursor:pointer;margin-top:4px}
+.empty-btn:hover{background:#1a8fff}
+
+/* ── MODAL ── */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;z-index:500;opacity:0;pointer-events:none;transition:opacity .2s}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:#fff;border-radius:var(--r12);box-shadow:0 20px 60px rgba(0,0,0,.3);width:400px;max-width:90vw;overflow:hidden;transform:scale(.96) translateY(-8px);transition:transform .2s}
+.modal-overlay.show .modal{transform:scale(1) translateY(0)}
+.modal-hdr{padding:16px 20px 12px;border-bottom:1px solid var(--sep)}
+.modal-hdr h3{font-size:14px;font-weight:700;color:var(--t1)}
+.modal-hdr p{font-size:12px;color:var(--t3);margin-top:2px}
+.modal-body{padding:16px 20px}
+.mfld{margin-bottom:14px}
+.mfld label{display:block;font-size:11px;font-weight:600;color:var(--t2);margin-bottom:5px}
+.mfld input,.mfld select{width:100%;font-family:inherit;font-size:13px;background:#fff;border:1px solid rgba(0,0,0,.18);border-radius:var(--r4);padding:7px 10px;outline:none;box-shadow:0 1px 2px rgba(0,0,0,.06) inset;transition:border-color .15s,box-shadow .15s}
+.mfld input:focus,.mfld select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(10,122,255,.18),0 1px 2px rgba(0,0,0,.06) inset}
+.type-desc{margin-top:6px;font-size:11px;color:var(--t3);line-height:1.5;padding:8px 10px;background:#f8f8f8;border-radius:var(--r4);border:1px solid var(--sep)}
+.modal-footer{padding:12px 20px;border-top:1px solid var(--sep);display:flex;gap:8px;justify-content:flex-end}
+.mbtn{font-family:inherit;font-size:12.5px;font-weight:500;border-radius:var(--r4);padding:6px 14px;cursor:pointer;border:1px solid #bbb;background:linear-gradient(to bottom,#fefefe,#f2f2f2);color:var(--t1)}
+.mbtn:hover{background:linear-gradient(to bottom,#fff,#ebebeb)}
+.mbtn-p{background:linear-gradient(to bottom,#1a8fff,#0a7aff);border-color:#005fd6;color:#fff}
+.mbtn-p:hover{background:linear-gradient(to bottom,#2a9fff,#1a8fff)}
+.mbtn-d{background:linear-gradient(to bottom,#f87171,#d9534f);border-color:#b22222;color:#fff}
+
+/* ── TOAST ── */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(8px);background:rgba(55,55,60,.9);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.15);color:#fff;font-size:12px;font-weight:500;padding:7px 18px;border-radius:20px;box-shadow:0 4px 14px rgba(0,0,0,.2);opacity:0;pointer-events:none;transition:opacity .22s,transform .22s;z-index:999;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+::-webkit-scrollbar{width:7px;height:7px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(0,0,0,.16);border-radius:4px}
+::-webkit-scrollbar-thumb:hover{background:rgba(0,0,0,.26)}
+.unit-row-hover:hover td{background:rgba(10,122,255,.04)!important}
+.tfoot-tr td{border-top:1px solid rgba(0,0,0,.1)!important;font-weight:600;padding-top:9px!important}
+</style>
+</head>
+<body>
+
+<!-- CHROME -->
+<div class="chrome">
+  <div style="display:flex;align-items:center;gap:10px">
+    <!-- Logo ANRI SVG -->
+    <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background circle abu -->
+      <rect width="100" height="100" rx="8" fill="#3a3f47"/>
+      <!-- Tiga panel biru ANRI -->
+      <path d="M18 20 Q30 10 42 20 L42 65 Q30 72 18 65 Z" fill="#0d7fc4"/>
+      <path d="M44 15 Q56 7 68 15 L68 60 Q56 68 44 60 Z" fill="#4ab3e8"/>
+      <path d="M70 22 Q82 14 82 28 L82 58 Q82 66 70 62 Z" fill="#89d0f0"/>
+      <!-- Text ANRI -->
+      <text x="50" y="88" text-anchor="middle" font-family="Arial Black,Arial" font-weight="900" font-size="18" fill="white" letter-spacing="2">ANRI</text>
+    </svg>
+    <div>
+      <div style="font-size:12px;font-weight:700;color:var(--t1);line-height:1.2">Formulir Penghitungan Kebutuhan Arsiparis</div>
+      <div style="font-size:10px;color:var(--t3);line-height:1.2">Arsip Nasional Republik Indonesia</div>
+    </div>
+  </div>
+  <div class="chrome-r">
+    <button class="tbtn" onclick="exportExcel()">⬇ Export Excel</button>
+    <button class="tbtn tbtn-p" onclick="saveAll()">⌘ Simpan</button>
+    <span class="save-st" id="save-st">Belum disimpan</span>
+  </div>
+</div>
+
+<!-- APP -->
+<div class="app">
+  <aside class="sidebar">
+    <div class="sb-header">
+      <div class="sb-title">Menu</div>
+      <button class="sb-nav-btn" id="nav-wiki" onclick="goMain('wiki')">
+        <div class="sb-ico" style="background:rgba(168,85,247,.12)">📖</div> Deskripsi Informasi Kearsipan
+      </button>
+      <button class="sb-nav-btn active" id="nav-input" onclick="goMain('input')">
+        <div class="sb-ico ico-b">⌗</div> Input per Unit Kerja
+      </button>
+      <button class="sb-nav-btn" id="nav-rekap" onclick="goMain('rekap')">
+        <div class="sb-ico ico-g">◈</div> Rekap Kebutuhan
+      </button>
+    </div>
+    <div class="sb-units" id="sb-units" style="display:none">
+      <div style="height:1px;background:var(--sep);margin:0 12px 8px"></div>
+      <div class="sb-units-hdr">
+        <span class="sb-units-label">Unit Kerja</span>
+        <button class="sb-add-btn" onclick="openModal()">+ Tambah</button>
+      </div>
+      <div id="unit-list"></div>
+    </div>
+  </aside>
+
+  <!-- ── INPUT PAGE ── -->
+  <div id="page-input" class="page active">
+
+    <!-- empty state -->
+    <div id="empty-state" class="empty-state" style="flex-direction:column;align-items:center;padding:40px 24px">
+      <!-- Step 1: isi K/L dulu -->
+      <div id="setup-step" style="width:100%;max-width:440px">
+        <div style="text-align:center;margin-bottom:28px">
+          <div style="font-size:36px;margin-bottom:10px">🏛️</div>
+          <div style="font-size:17px;font-weight:700;color:var(--t1);margin-bottom:6px">Selamat datang!</div>
+          <div style="font-size:12.5px;color:var(--t3);line-height:1.6">Mulai dengan mengisi nama Kementerian / Lembaga,<br>lalu tambahkan unit kerja yang akan dihitung kebutuhannya.</div>
+        </div>
+        <div style="background:#fff;border:1px solid var(--bdr);border-radius:var(--r12);padding:20px 22px;box-shadow:var(--sh)">
+          <div class="mfld" style="margin-bottom:14px">
+            <label style="font-size:12px;font-weight:600;color:var(--t2);display:block;margin-bottom:5px">Nama Kementerian / Lembaga</label>
+            <input id="setup-kl" type="text" placeholder="Kementerian Agama RI"
+              style="width:100%;font-family:inherit;font-size:13px;background:#fff;border:1px solid rgba(0,0,0,.18);border-radius:var(--r4);padding:8px 12px;outline:none;box-shadow:0 1px 2px rgba(0,0,0,.06) inset;transition:border-color .15s"
+              onkeydown="if(event.key==='Enter')startSetup()">
+          </div>
+          <button onclick="startSetup()" style="width:100%;font-family:inherit;font-size:13px;font-weight:600;background:var(--accent);color:#fff;border:none;border-radius:var(--r8);padding:10px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='#1a8fff'" onmouseout="this.style.background='var(--accent)'">
+            Lanjut → Tambah Unit Kerja
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- form area (hidden until unit selected) -->
+    <div id="form-area" style="display:none;flex:1;flex-direction:column;overflow:hidden">
+
+      <!-- unit header -->
+      <div class="unit-hdr">
+        <div>
+          <div class="unit-hdr-name" id="unit-hdr-name">—</div>
+          <div style="font-size:11px;color:var(--t3);margin-top:1px" id="unit-hdr-sub">—</div>
+        </div>
+        <span class="unit-hdr-type" id="unit-hdr-type"></span>
+        <div style="display:flex;align-items:center;gap:6px;margin-left:auto">
+          <button class="tbtn" style="font-size:11px;padding:3px 10px;color:var(--accent);border-color:rgba(10,122,255,.3);background:rgba(10,122,255,.06)" onclick="rekapSementara()">
+            ◈ Rekap Sementara
+          </button>
+          <button class="unit-hdr-edit" onclick="editUnit()">✏ Edit</button>
+          <button class="tbtn tbtn-d" style="font-size:11px;padding:3px 10px" onclick="deleteUnit()">Hapus</button>
+        </div>
+      </div>
+
+      <!-- horizontal section tabs -->
+      <div class="sec-tabs" id="sec-tabs">
+        <!-- populated by JS based on unit type -->
+      </div>
+
+      <!-- scroll content -->
+      <div class="sec-scroll" id="sec-scroll">
+        <!-- sections populated by JS -->
+      </div>
+
+    </div>
+  </div><!-- /page-input -->
+
+  <!-- ── REKAP PAGE ── -->
+  <div id="page-rekap" class="page">
+    <div class="sec-scroll" style="max-width:980px;margin:0 auto;width:100%">
+
+      <!-- ── VIEW: REKAP SEMUA UNIT ── -->
+      <div id="view-all">
+        <div style="margin-bottom:16px">
+          <div style="font-size:20px;font-weight:700;letter-spacing:-.025em;color:var(--t1)">Rekap Kebutuhan JFA</div>
+          <div style="font-size:12px;color:var(--t3);margin-top:2px">Kementerian Agama · Klik nama unit untuk melihat rincian</div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr"><h3>Ringkasan per Unit Kerja</h3><div class="cpill" id="rekap-count">0 unit</div></div>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr>
+                <th>Unit Kerja</th><th>K/L</th><th>Tipe</th>
+                <th class="r">Terampil</th><th class="r">Mahir</th><th class="r">Penyelia</th>
+                <th class="r">Ahli Pertama</th><th class="r">Ahli Muda</th><th class="r">Ahli Madya</th><th class="r">Ahli Utama</th>
+                <th class="r">Total</th>
+              </tr></thead>
+              <tbody id="rekap-unit-tbody"></tbody>
+              <tfoot>
+                <tr style="background:#f8f8f8">
+                  <td style="padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)" colspan="3">TOTAL</td>
+                  <td class="mono" id="rt-0">—</td><td class="mono" id="rt-1">—</td><td class="mono" id="rt-2">—</td>
+                  <td class="mono" id="rt-3">—</td><td class="mono" id="rt-4">—</td><td class="mono" id="rt-5">—</td>
+                  <td class="mono" id="rt-6">—</td><td class="mono acc" id="rt-total">0</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr"><h3>Total Kebutuhan per Jabatan — Semua Unit</h3></div>
+          <div class="rk-cards" id="rekap-cards"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr">
+            <h3>Visualisasi Kebutuhan</h3>
+            <div style="margin-left:auto;display:flex;gap:6px">
+              <button onclick="setChartMode('stacked')" id="btn-stacked" class="tbtn" style="font-size:11px;padding:3px 10px;background:var(--accent);color:#fff;border-color:var(--accent)">Per Unit</button>
+              <button onclick="setChartMode('total')"   id="btn-total"   class="tbtn" style="font-size:11px;padding:3px 10px">Total</button>
+            </div>
+          </div>
+          <div style="padding:16px;position:relative;height:280px">
+            <canvas id="rekapChart"></canvas>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── VIEW: REKAP DETAIL SATU UNIT ── -->
+      <div id="view-unit" style="display:none">
+        <!-- breadcrumb -->
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:16px">
+          <button onclick="showAllView()" style="font-size:12px;color:var(--accent);background:none;border:none;cursor:pointer;padding:4px 0;display:flex;align-items:center;gap:4px">
+            ← Rekap Kebutuhan
+          </button>
+          <span style="color:var(--t3);font-size:12px">/</span>
+          <span style="font-size:12px;color:var(--t2);font-weight:500" id="detail-breadcrumb">—</span>
+        </div>
+
+        <!-- unit info header -->
+        <div style="margin-bottom:16px;display:flex;align-items:center;gap:10px">
+          <div>
+            <div style="font-size:20px;font-weight:700;letter-spacing:-.025em;color:var(--t1)" id="detail-name">—</div>
+            <div style="font-size:12px;color:var(--t3);margin-top:2px">Kementerian Agama · <span id="detail-type-label">—</span></div>
+          </div>
+          <span id="detail-type-badge" style="font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;margin-left:auto"></span>
+        </div>
+
+        <!-- cards per jabatan -->
+        <div class="card">
+          <div class="card-hdr"><h3>Kebutuhan per Jenjang Jabatan</h3></div>
+          <div class="rk-cards" id="detail-cards"></div>
+        </div>
+
+        <div class="card">
+          <div class="card-hdr"><h3>Grafik Beban Kerja</h3><div class="cpill">menit / WKE</div></div>
+          <div style="padding:16px;position:relative;height:220px">
+            <canvas id="detailChart"></canvas>
+          </div>
+        </div>
+
+        <!-- tabel presisi -->
+        <div class="card">
+          <div class="card-hdr">
+            <h3>Rincian Perhitungan</h3>
+            <div class="cpill">WKE = 75.000 mnt/org/thn</div>
+          </div>
+          <div class="dtbl">
+            <table>
+              <thead><tr>
+                <th>Jabatan Fungsional</th>
+                <th class="r">Total Beban (mnt)</th>
+                <th class="r">WKE</th>
+                <th class="r">Presisi</th>
+                <th class="r">Kebutuhan</th>
+              </tr></thead>
+              <tbody id="detail-tbody"></tbody>
+              <tfoot>
+                <tr class="tfoot-tr">
+                  <td style="padding:8px 12px;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t3)">Total</td>
+                  <td style="text-align:right;padding:8px 12px;font-family:'SF Mono','Menlo',monospace;font-weight:600" id="detail-total-beban">0</td>
+                  <td></td><td></td>
+                  <td style="text-align:right;padding:8px 12px;font-family:'SF Mono','Menlo',monospace;color:var(--accent);font-weight:700" id="detail-total-org">0</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+
+        <!-- tombol ke input unit ini -->
+        <div style="margin-top:4px;text-align:right">
+          <button class="tbtn tbtn-p" id="detail-goto-input" onclick="">
+            ✏ Edit Input Unit Ini
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── WIKI PAGE ── -->
+  <div id="page-wiki" class="page" style="overflow-y:auto;display:none">
+  <div style="max-width:880px;margin:0 auto;padding:28px 28px 80px;width:100%">
+
+    <div style="margin-bottom:22px">
+      <div style="font-size:20px;font-weight:700;letter-spacing:-.025em;color:var(--t1)">Deskripsi Informasi Kearsipan</div>
+      <div style="font-size:12px;color:var(--t3);margin-top:3px">Referensi deskripsi kegiatan kearsipan — Sumber: Kementerian Komunikasi & Digital RI</div>
+    </div>
+
+    <!-- Legend jabatan -->
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;padding:10px 14px;background:#fff;border:1px solid var(--sep);border-radius:10px;align-items:center">
+      <div style="font-size:11px;font-weight:600;color:var(--t3);margin-right:4px">Jabatan:</div>
+      <span class="jb jb-t">Terampil</span>
+      <span class="jb jb-m">Mahir</span>
+      <span class="jb jb-p">Penyelia</span>
+      <span class="jb jb-ap">Ahli Pertama</span>
+      <span class="jb jb-am">Ahli Muda</span>
+      <span class="jb jb-ad">Ahli Madya</span>
+    </div>
+
+    <!-- Siklus flow -->
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-hdr"><h3>Siklus Hidup Arsip</h3><div class="cpill">Overview</div></div>
+      <div style="padding:18px 16px">
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:6px;justify-content:center">
+          <div style="background:#eff6ff;color:#1d4ed8;border:1px solid #bfdbfe;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600">✍️ Penciptaan</div>
+          <div style="color:#9ca3af;font-size:18px">→</div>
+          <div style="background:#f0fdf4;color:#15803d;border:1px solid #bbf7d0;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600">📂 Penggunaan</div>
+          <div style="color:#9ca3af;font-size:18px">→</div>
+          <div style="background:#fefce8;color:#a16207;border:1px solid #fde68a;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600">🛡️ Pemeliharaan</div>
+          <div style="color:#9ca3af;font-size:18px">→</div>
+          <div style="background:#fef2f2;color:#b91c1c;border:1px solid #fecaca;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:600">📦 Penyusutan</div>
+        </div>
+        <div style="margin-top:12px;font-size:12px;color:var(--t3);text-align:center;line-height:1.7">
+          Arsip melewati empat fase sejak tercipta hingga dimusnahkan atau diserahkan ke lembaga kearsipan.<br>Setiap fase melibatkan jenjang jabatan fungsional arsiparis yang berbeda.
+        </div>
+      </div>
+    </div>
+
+    <!-- 1 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hdr" style="cursor:pointer" onclick="toggleWiki('w1')">
+        <div style="width:28px;height:28px;border-radius:7px;background:#eff6ff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">✍️</div>
+        <h3 style="margin-left:8px">1 · Penerimaan & Pembuatan Arsip</h3>
+        <span id="w1-chev" style="margin-left:auto;color:var(--t3);font-size:13px">▾</span>
+      </div>
+      <div id="w1" style="padding:16px;display:flex;flex-direction:column;gap:10px">
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Pembuatan Arsip</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-t" style="font-size:10.5px">Terampil</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Proses terciptanya arsip sebagai rekaman kegiatan atau peristiwa dalam pelaksanaan fungsi dan tugas pencipta arsip, baik dalam bentuk fisik maupun elektronik, sejak kegiatan direncanakan, dilaksanakan, hingga diselesaikan, sehingga arsip yang dihasilkan bersifat autentik, utuh, dan dapat dipertanggungjawabkan.</div>
+          </div>
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Penerimaan Arsip</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-t" style="font-size:10.5px">Terampil</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan menerima arsip oleh unit pengolah dan unit kearsipan sesuai kewenangannya, baik arsip yang berasal dari kegiatan internal maupun dari pihak eksternal, sebagai bagian dari tahap penciptaan arsip untuk selanjutnya dikelola sesuai ketentuan kearsipan.</div>
+          </div>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Verifikasi Autentisitas Arsip yang Tercipta</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-p" style="font-size:10.5px">Penyelia</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pemeriksaan terhadap keaslian, keabsahan, dan keutuhan arsip yang dibuat atau diterima, guna menjamin arsip tersebut dapat dipertanggungjawabkan sebagai bukti pelaksanaan kegiatan pencipta arsip.</div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 2 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hdr" style="cursor:pointer" onclick="toggleWiki('w2')">
+        <div style="width:28px;height:28px;border-radius:7px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📁</div>
+        <h3 style="margin-left:8px">2 · Pemberkasan Arsip</h3>
+        <span id="w2-chev" style="margin-left:auto;color:var(--t3);font-size:13px">▾</span>
+      </div>
+      <div id="w2" style="padding:16px;display:none;flex-direction:column;gap:10px">
+        <div style="background:#eff6ff;border:1px solid #bfdbfe;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Pemberkasan Arsip</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-t" style="font-size:10.5px">Terampil</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan menempatkan dan menghimpun arsip yang telah dibuat atau diterima ke dalam suatu berkas secara sistematis dan logis berdasarkan klasifikasi arsip, sehingga arsip tersusun utuh sesuai konteks kegiatan dan mudah ditemukan kembali.</div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 3 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hdr" style="cursor:pointer" onclick="toggleWiki('w3')">
+        <div style="width:28px;height:28px;border-radius:7px;background:#fefce8;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📂</div>
+        <h3 style="margin-left:8px">3 · Layanan Arsip Aktif & Inaktif</h3>
+        <span id="w3-chev" style="margin-left:auto;color:var(--t3);font-size:13px">▾</span>
+      </div>
+      <div id="w3" style="padding:16px;display:none;flex-direction:column;gap:10px">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Layanan Arsip Aktif & Arsip Inaktif</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-m" style="font-size:10.5px">Mahir</span><span class="jb jb-p" style="font-size:10.5px">Penyelia</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pemberian akses dan pemanfaatan arsip aktif dan arsip inaktif kepada pihak yang berwenang sesuai ketentuan kearsipan (Klasifikasi Keamanan dan Akses Arsip Dinamis), untuk mendukung pelaksanaan tugas, fungsi, serta pertanggungjawaban organisasi.</div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 4 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hdr" style="cursor:pointer" onclick="toggleWiki('w4')">
+        <div style="width:28px;height:28px;border-radius:7px;background:#fef2f2;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📦</div>
+        <h3 style="margin-left:8px">4 · Penyusutan Arsip</h3>
+        <span id="w4-chev" style="margin-left:auto;color:var(--t3);font-size:13px">▾</span>
+      </div>
+      <div id="w4" style="padding:16px;display:none;flex-direction:column;gap:10px">
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.7;padding:12px 14px;background:#fef2f2;border-radius:8px;border:1px solid #fecaca">
+          Penyusutan arsip merupakan rangkaian kegiatan untuk mengendalikan jumlah dan nilai guna arsip dengan cara <strong>memindahkan arsip inaktif</strong>, <strong>memusnahkan arsip yang telah habis retensinya</strong>, dan <strong>menyerahkan arsip bernilai permanen</strong> kepada lembaga kearsipan.
+        </div>
+        <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Pemindahan Arsip</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-m" style="font-size:10.5px">Mahir</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan memindahkan arsip yang berdasarkan Jadwal Retensi Arsip telah melewati masa retensi aktif dan frekuensi penggunaannya menurun dari unit pengolah ke unit kearsipan.</div>
+          </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Pemusnahan Arsip</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-ap" style="font-size:10.5px">Ahli Pertama</span><span class="jb jb-am" style="font-size:10.5px">Ahli Muda</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan penyusutan arsip yang dilakukan terhadap arsip yang tidak memiliki nilai guna, telah habis masa retensinya, berketerangan musnah dalam Jadwal Retensi Arsip, serta tidak terkait dengan proses hukum atau peraturan perundang-undangan yang melarang pemusnahan.</div>
+          </div>
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Penyerahan Arsip Statis</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-ap" style="font-size:10.5px">Ahli Pertama</span><span class="jb jb-am" style="font-size:10.5px">Ahli Muda</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Penyerahan arsip statis dilakukan terhadap arsip yang memiliki nilai guna kesejarahan, telah habis masa retensinya, dan berketerangan dipermanenkan dalam Jadwal Retensi Arsip, untuk diserahkan oleh pencipta arsip kepada lembaga kearsipan sesuai kewenangannya.</div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 5 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hdr" style="cursor:pointer" onclick="toggleWiki('w5')">
+        <div style="width:28px;height:28px;border-radius:7px;background:#f5f3ff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">💿</div>
+        <h3 style="margin-left:8px">5 · Alih Media Arsip</h3>
+        <span id="w5-chev" style="margin-left:auto;color:var(--t3);font-size:13px">▾</span>
+      </div>
+      <div id="w5" style="padding:16px;display:none;flex-direction:column;gap:10px">
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Alih Media Arsip</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-p" style="font-size:10.5px">Penyelia</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pengalihan arsip dari satu media ke media lain dalam rangka menjaga keutuhan informasi, memudahkan akses, dan menjamin keberlanjutan arsip sesuai dengan perkembangan teknologi informasi.</div>
+          </div>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Autentikasi Arsip Hasil Alih Media</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-p" style="font-size:10.5px">Penyelia</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pemberian tanda pengesahan untuk menjamin bahwa arsip hasil alih media merupakan salinan yang sah, utuh, dan sesuai dengan arsip aslinya.</div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 6 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hdr" style="cursor:pointer" onclick="toggleWiki('w6')">
+        <div style="width:28px;height:28px;border-radius:7px;background:#f0fdf4;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">🛡️</div>
+        <h3 style="margin-left:8px">6 · Arsip Terjaga & Arsip Vital</h3>
+        <span id="w6-chev" style="margin-left:auto;color:var(--t3);font-size:13px">▾</span>
+      </div>
+      <div id="w6" style="padding:16px;display:none;flex-direction:column;gap:10px">
+        <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Arsip Terjaga</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-m" style="font-size:10.5px">Mahir</span><span class="jb jb-am" style="font-size:10.5px">Ahli Muda</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Arsip negara yang karena nilai strategis dan dampaknya terhadap kedaulatan, pertahanan, dan kepentingan nasional, harus dikelola secara khusus, dilindungi tingkat tinggi, serta dilaporkan dan diserahkan salinan autentiknya kepada ANRI sesuai ketentuan peraturan perundang-undangan.</div>
+          </div>
+        <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Arsip Vital</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-p" style="font-size:10.5px">Penyelia</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Arsip yang diperlukan untuk menjamin keberlangsungan fungsi dan kegiatan organisasi, karena berkaitan dengan status hukum, hak, kewajiban, dan/atau aset, yang apabila hilang tidak dapat diganti dan dapat mengganggu pelaksanaan kegiatan organisasi.</div>
+          </div>
+      </div>
+    </div>
+
+    <!-- 7 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hdr" style="cursor:pointer" onclick="toggleWiki('w7')">
+        <div style="width:28px;height:28px;border-radius:7px;background:#fff7ed;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">📋</div>
+        <h3 style="margin-left:8px">7 · Pembinaan Kearsipan</h3>
+        <span id="w7-chev" style="margin-left:auto;color:var(--t3);font-size:13px">▾</span>
+      </div>
+      <div id="w7" style="padding:16px;display:none">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Penyusunan SOP Kearsipan</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-ap" style="font-size:10.5px">Ahli Pertama</span><span class="jb jb-am" style="font-size:10.5px">Ahli Muda</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan merumuskan dan menetapkan prosedur kerja baku dalam penyelenggaraan kearsipan agar setiap proses pengelolaan arsip dilakukan secara seragam, sistematis, tertib, dan sesuai ketentuan peraturan perundang-undangan.</div>
+          </div>
+          <div style="background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">BIMTEK Pengelolaan Arsip</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-m" style="font-size:10.5px">Mahir</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pemberian pembinaan teknis dan peningkatan kompetensi kepada SDM kearsipan mengenai tata cara pengelolaan arsip, mulai dari penciptaan, penggunaan, pemeliharaan, hingga penyusutan arsip sesuai standar kearsipan.</div>
+          </div>
+          <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">BIMTEK SDM Kearsipan</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-am" style="font-size:10.5px">Ahli Muda</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pengembangan pengetahuan, keterampilan, dan sikap profesional SDM kearsipan agar mampu melaksanakan tugas dan fungsi kearsipan secara efektif, sesuai standar kompetensi dan ketentuan jabatan fungsional kearsipan.</div>
+          </div>
+          <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Penyuluhan Kearsipan</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-am" style="font-size:10.5px">Ahli Muda</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan sosialisasi dan penyadaran SDM Kearsipan serta Jabatan Fungsional terkait lainnya, mengenai pentingnya arsip, nilai guna arsip, serta kewajiban penyelenggaraan kearsipan dalam rangka meningkatkan kesadaran tertib arsip.</div>
+          </div>
+          <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Fasilitasi Kearsipan</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-am" style="font-size:10.5px">Ahli Muda</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pemberian pendampingan, bantuan, dan dukungan teknis kepada pencipta arsip dalam penyelenggaraan kearsipan agar sesuai dengan norma, standar, prosedur, dan kriteria (NSPK) kearsipan.</div>
+          </div>
+          <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Monev Sistem Kearsipan</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-am" style="font-size:10.5px">Ahli Muda</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pemantauan dan penilaian terhadap penerapan sistem kearsipan untuk mengetahui tingkat kesesuaian, efektivitas, dan permasalahan penyelenggaraan kearsipan sebagai dasar perbaikan berkelanjutan.</div>
+          </div>
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">BIMKOS Penyelenggaraan Kearsipan</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-ad" style="font-size:10.5px">Ahli Madya</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pemberian arahan, solusi, dan rekomendasi teknis kepada pencipta arsip dalam menghadapi permasalahan kearsipan agar penyelenggaraan kearsipan berjalan sesuai ketentuan.</div>
+          </div>
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Supervisi Penyelenggaraan Kearsipan</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-ad" style="font-size:10.5px">Ahli Madya</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan pengawasan dan pembinaan langsung terhadap pelaksanaan kearsipan oleh pencipta arsip untuk memastikan kepatuhan terhadap kebijakan, standar, dan regulasi kearsipan.</div>
+          </div>
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Pengawasan Kearsipan</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-ad" style="font-size:10.5px">Ahli Madya</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Proses kegiatan dalam menilai kesesuaian antara prinsip, kaidah, dan standar kearsipan dengan penyelenggaraan kearsipan yang dilakukan oleh pencipta arsip.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 -->
+    <div class="card" style="margin-bottom:12px">
+      <div class="card-hdr" style="cursor:pointer" onclick="toggleWiki('w8')">
+        <div style="width:28px;height:28px;border-radius:7px;background:#f0f9ff;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0">💾</div>
+        <h3 style="margin-left:8px">8 · Pengelolaan Arsip & SIKN / JIKN</h3>
+        <span id="w8-chev" style="margin-left:auto;color:var(--t3);font-size:13px">▾</span>
+      </div>
+      <div id="w8" style="padding:16px;display:none;flex-direction:column;gap:10px">
+        <div style="font-size:12.5px;color:var(--t2);line-height:1.7;padding:12px 14px;background:#f0f9ff;border-radius:8px;border:1px solid #bae6fd">
+          Pengolahan dan penyajian arsip menjadi informasi melalui <strong>SIKN</strong> dan <strong>JIKN</strong> merupakan kegiatan pengelolaan data arsip aktif, inaktif, vital, dan terjaga secara sistematis melalui proses identifikasi, pengolahan, dan entry data sesuai standar kearsipan, guna menjamin ketersediaan informasi arsip yang autentik, akurat, aman, dan dapat dimanfaatkan dalam mendukung akuntabilitas dan pelayanan informasi.
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <div style="background:#fefce8;border:1px solid #fde68a;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Identifikasi & Pengolahan Data Arsip Aktif</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-p" style="font-size:10.5px">Penyelia</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan identifikasi, pengolahan, dan entry data arsip aktif ke dalam sistem informasi kearsipan untuk mendukung temu balik arsip dan pelayanan informasi.</div>
+          </div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Identifikasi & Pengolahan Data Arsip Inaktif</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-ap" style="font-size:10.5px">Ahli Pertama</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan identifikasi, pengolahan, dan entry data arsip inaktif yang tersimpan di record center ke dalam sistem informasi kearsipan nasional.</div>
+          </div>
+          <div style="background:#fef2f2;border:1px solid #fecaca;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Identifikasi & Pengolahan Data Arsip Vital</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-ap" style="font-size:10.5px">Ahli Pertama</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan identifikasi dan pengolahan data arsip vital ke dalam sistem informasi kearsipan untuk mendukung perlindungan dan pengelolaan arsip vital organisasi.</div>
+          </div>
+          <div style="background:#f5f3ff;border:1px solid #ddd6fe;border-radius:10px;padding:14px;position:relative">
+            <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:8px">
+              <div style="font-size:12.5px;font-weight:700;color:var(--t1);line-height:1.4">Identifikasi & Pengolahan Data Arsip Terjaga</div>
+              <div style="display:flex;gap:4px;flex-wrap:wrap;justify-content:flex-end;flex-shrink:0"><span class="jb jb-am" style="font-size:10.5px">Ahli Muda</span></div>
+            </div>
+            <div style="font-size:12px;color:var(--t2);line-height:1.65">Kegiatan identifikasi dan pengolahan data arsip terjaga ke dalam sistem informasi kearsipan nasional sebagai bagian dari upaya perlindungan arsip negara.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Referensi regulasi -->
+    <div class="card">
+      <div class="card-hdr"><h3>Referensi Regulasi</h3></div>
+      <div style="padding:14px 16px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 12px;background:#f9fafb;border-radius:8px;border:1px solid var(--sep)">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap">UU No. 43/2009</div>
+          <div style="font-size:11px;color:var(--t2)">Kearsipan</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 12px;background:#f9fafb;border-radius:8px;border:1px solid var(--sep)">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap">PP No. 28/2012</div>
+          <div style="font-size:11px;color:var(--t2)">Pelaksanaan UU Kearsipan</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 12px;background:#f9fafb;border-radius:8px;border:1px solid var(--sep)">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap">Perpres No. 95/2018</div>
+          <div style="font-size:11px;color:var(--t2)">Sistem Pemerintahan Berbasis Elektronik</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 12px;background:#f9fafb;border-radius:8px;border:1px solid var(--sep)">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap">PerKa ANRI No. 9/2018</div>
+          <div style="font-size:11px;color:var(--t2)">Standar Layanan JFA</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 12px;background:#f9fafb;border-radius:8px;border:1px solid var(--sep)">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap">PerKa ANRI No. 5/2021</div>
+          <div style="font-size:11px;color:var(--t2)">Program Arsip Vital</div>
+        </div>
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:8px 12px;background:#f9fafb;border-radius:8px;border:1px solid var(--sep)">
+          <div style="font-size:11px;font-weight:700;color:var(--accent);white-space:nowrap">Permenpan-RB No. 48/2014</div>
+          <div style="font-size:11px;color:var(--t2)">Jabatan Fungsional Arsiparis</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div><!-- /page-wiki -->
+
+
+
+<!-- ── LIVE PREVIEW PANEL ── -->
+<!-- Live Preview Tab (always visible when active unit) -->
+<div id="lp-tab" style="
+  position:fixed;bottom:0;right:28px;
+  background:var(--accent);color:#fff;
+  border-radius:8px 8px 0 0;padding:6px 14px;
+  font-size:11.5px;font-weight:600;cursor:pointer;
+  display:none;align-items:center;gap:6px;
+  box-shadow:0 -2px 8px rgba(10,122,255,.25);
+  z-index:199;transition:background .15s;
+  user-select:none;
+" onclick="expandLivePreview()" onmouseover="this.style.background='#1a8fff'" onmouseout="this.style.background='var(--accent)'">
+  ◈ Rekap Sementara
+  <span id="lp-tab-total" style="background:rgba(255,255,255,.25);border-radius:10px;padding:1px 7px;font-family:'SF Mono',monospace;font-size:11px">0</span>
+</div>
+
+<div id="live-preview" style="
+  position:fixed;bottom:0;right:20px;width:230px;
+  background:#fff;border:1px solid var(--bdr);border-radius:var(--r12) var(--r12) 0 0;
+  box-shadow:0 -4px 20px rgba(0,0,0,.12);z-index:200;
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.34,1.56,.64,1);
+  overflow:hidden;
+">
+  <div style="padding:10px 14px;background:linear-gradient(to bottom,#fafafa,#f4f4f4);border-bottom:1px solid var(--sep);display:flex;align-items:center;gap:6px;cursor:pointer" onclick="minimizeLivePreview()">
+    <div style="font-size:11px;font-weight:700;color:var(--t2)">◈ Rekap Sementara</div>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+      <span style="font-size:10px;color:var(--t3)">klik untuk minimize</span>
+      <span style="color:var(--t3);font-size:11px">⌄</span>
+    </div>
+  </div>
+  <div style="padding:10px 14px" id="lp-body">
+    <div style="font-size:11px;color:var(--t3);margin-bottom:8px;font-weight:500" id="lp-unit-name">—</div>
+    <div id="lp-rows"></div>
+    <div style="margin-top:8px;padding-top:8px;border-top:1px solid var(--sep);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-size:11px;font-weight:600;color:var(--t3)">Total</span>
+      <span style="font-family:'SF Mono','Menlo',monospace;font-size:16px;font-weight:700;color:var(--accent)" id="lp-total">0</span>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<!-- ── MODAL TAMBAH/EDIT UNIT ── -->
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <div class="modal-hdr">
+      <h3 id="modal-title">Tambah Unit Kerja</h3>
+      <p id="modal-sub">Masukkan informasi unit kerja</p>
+    </div>
+    <div class="modal-body">
+      <div class="mfld">
+        <label>Nama Kementerian / Lembaga</label>
+        <input id="m-kl" type="text" placeholder="Kementerian Agama RI">
+      </div>
+      <div class="mfld">
+        <label>Nama Unit Kerja</label>
+        <input id="m-name" type="text" placeholder="Biro Umum / Setditjen Pendis ...">
+      </div>
+      <div class="mfld">
+        <label>Tipe Unit</label>
+        <select id="m-type" onchange="updateTypeDesc()">
+          <option value="upuk">UP + UK I (Unit Pengolah & Unit Kearsipan I)</option>
+          <option value="up">UP Saja (Unit Pengolah)</option>
+        </select>
+        <div class="type-desc" id="type-desc">
+          Memiliki fungsi sebagai Unit Pengolah sekaligus Unit Kearsipan I. Form input mencakup PAD, Pembinaan Kearsipan, dan SIKN/JIKN lengkap.
+        </div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="mbtn mbtn-d" id="modal-delete-btn" style="display:none;margin-right:auto" onclick="confirmDeleteFromModal()">Hapus Unit</button>
+      <button class="mbtn" onclick="closeModal()">Batal</button>
+      <button class="mbtn mbtn-p" onclick="submitModal()">Simpan</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+const WKE = 75000;
+const TYPE_DESC = {
+  upuk: 'Memiliki fungsi sebagai Unit Pengolah sekaligus Unit Kearsipan I. Form input mencakup PAD, Pembinaan Kearsipan, dan SIKN/JIKN lengkap.',
+  up:   'Hanya sebagai Unit Pengolah (UP). Form input mencakup kegiatan Pengelolaan Arsip Dinamis sisi UP, Pembinaan Kearsipan, dan SIKN/JIKN yang relevan bagi Unit Pengolah.'
+};
+
+// ── STATE ──
+let units = [];      // [{id, name, type, data:{}}]
+let activeUnitId = null;
+let modalMode = 'add'; // 'add' | 'edit'
+let editingUnitId = null;
+
+// ── INIT ──
+// ── SETUP FLOW ──
+function startSetup() {
+  const kl = document.getElementById('setup-kl')?.value.trim();
+  // save kl as default for new units
+  window._defaultKL = kl || '';
+  openModal();
+}
+
+// Pre-fill K/L dari setup saat buka modal add
+document.addEventListener('DOMContentLoaded', () => {
+  loadFromStorage();
+  renderSidebar();
+  if (units.length > 0) selectUnit(units[0].id);
+});
+
+// ── STORAGE ──
+function loadFromStorage() {
+  const raw = localStorage.getItem('jfa_kemenag_v1');
+  if (raw) {
+    try { units = JSON.parse(raw); } catch(e) { units = []; }
+  }
+}
+function saveToStorage() {
+  localStorage.setItem('jfa_kemenag_v1', JSON.stringify(units));
+  document.getElementById('save-st').textContent = `Disimpan ${new Date().toLocaleTimeString('id')}`;
+}
+function saveAll() {
+  // also pull current form values into active unit
+  if (activeUnitId) pullFormValues();
+  saveToStorage();
+  toast('✓  Semua data disimpan');
+}
+
+// ── SIDEBAR RENDER ──
+function renderSidebar() {
+  const list = document.getElementById('unit-list');
+  if (units.length === 0) {
+    list.innerHTML = '<div class="sb-empty">Belum ada unit kerja</div>';
+    return;
+  }
+  list.innerHTML = units.map(u => `
+    <button class="unit-item ${u.id === activeUnitId ? 'active' : ''}" onclick="selectUnit('${u.id}')">
+      <div class="unit-dot ${u.type==='upuk'?'dot-upuk':'dot-up'}"></div>
+      <div style="flex:1;overflow:hidden;min-width:0">
+        <div class="unit-name">${u.name}</div>
+        ${u.kl ? `<div style="font-size:10px;color:var(--t3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:1px">${u.kl}</div>` : ''}
+      </div>
+      <span class="unit-type ${u.type==='upuk'?'type-upuk':'type-up'}" style="flex-shrink:0">${u.type==='upuk'?'UP+UK':'UP'}</span>
+    </button>
+  `).join('');
+}
+
+// ── SELECT UNIT ──
+function selectUnit(id) {
+  // save current form before switching
+  if (activeUnitId && activeUnitId !== id) pullFormValues();
+
+  activeUnitId = id;
+  const unit = units.find(u => u.id === id);
+  if (!unit) return;
+
+  renderSidebar();
+  renderFormArea(unit);
+  lpActive = false; // reset, akan diset ulang di updateLivePreview
+
+  // make sure we're on input page
+  document.getElementById('page-input').classList.add('active');
+  document.getElementById('page-rekap').classList.remove('active');
+  document.getElementById('page-wiki') && (document.getElementById('page-wiki').style.display='none');
+  document.getElementById('nav-input').classList.add('active');
+  document.getElementById('nav-rekap').classList.remove('active');
+  document.getElementById('nav-wiki') && document.getElementById('nav-wiki').classList.remove('active');
+  document.getElementById('empty-state').style.display = 'none';
+  document.getElementById('form-area').style.display = 'flex';
+  document.getElementById('sb-units').style.display = '';
+  setTimeout(updateLivePreview, 100);
+}
+
+// ── RENDER FORM AREA ──
+function renderFormArea(unit) {
+  // header
+  document.getElementById('unit-hdr-name').textContent = unit.name;
+  document.getElementById('unit-hdr-sub').textContent  = unit.kl || 'Kementerian / Lembaga';
+  const typeEl = document.getElementById('unit-hdr-type');
+  if (unit.type === 'upuk') {
+    typeEl.textContent = 'UP + UK I';
+    typeEl.style.cssText = 'background:#ede9fe;color:#6d28d9;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px';
+  } else {
+    typeEl.textContent = 'UP Saja';
+    typeEl.style.cssText = 'background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px';
+  }
+
+  // tabs & sections
+  const tabs = unit.type === 'upuk'
+    ? [['pad','📁 Arsip Dinamis'],['pk','📋 Pembinaan Kearsipan'],['sikn','💾 SIKN / JIKN']]
+    : [['pad-up','📁 Arsip Dinamis'],['pk-up','📋 Pembinaan Kearsipan'],['sikn-up','💾 SIKN / JIKN']];
+
+  document.getElementById('sec-tabs').innerHTML = tabs.map((t,i) =>
+    `<button class="sec-tab ${i===0?'active':''}" onclick="goSec('${t[0]}',this)">${t[1]}</button>`
+  ).join('');
+
+  // render sections
+  const scroll = document.getElementById('sec-scroll');
+  if (unit.type === 'upuk') {
+    scroll.innerHTML = renderPAD() + renderPK() + renderSIKN();
+  } else {
+    scroll.innerHTML = renderPAD_UP() + renderPK_UP() + renderSIKN_UP();
+  }
+
+  // populate values
+  pushFormValues(unit);
+  if (unit.type === 'upuk') calc(); else calcUP();
+}
+
+// ── PULL/PUSH VALUES ──
+function pullFormValues() {
+  const unit = units.find(u => u.id === activeUnitId);
+  if (!unit) return;
+  if (!unit.data) unit.data = {};
+  document.querySelectorAll('.ni:not(.ni-c)').forEach(el => {
+    if (el.id) unit.data[el.id] = parseFloat(el.value) || 0;
+  });
+}
+function pushFormValues(unit) {
+  if (!unit.data) return;
+  Object.entries(unit.data).forEach(([id, val]) => {
+    const el = document.getElementById(id);
+    if (el) el.value = val;
+  });
+}
+
+// ── NAVIGATION ──
+function rekapSementara() {
+  if (!activeUnitId) return;
+  pullFormValues();
+  goMain('rekap');
+  showUnitDetail(activeUnitId);
+}
+
+function goMain(id) {
+  if (id === 'rekap') {
+    if (activeUnitId) pullFormValues();
+    saveToStorage();
+    renderRekap();
+    setTimeout(renderRekapChart, 50);
+  }
+  document.querySelectorAll('.sb-nav-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('nav-' + id).classList.add('active');
+  ['input','rekap','wiki'].forEach(p => {
+    const el = document.getElementById('page-' + p);
+    if (el) { el.classList.remove('active'); el.style.display = 'none'; }
+  });
+  const pg = document.getElementById('page-' + id);
+  if (pg) { pg.classList.add('active'); pg.style.display = id === 'wiki' ? 'block' : 'flex'; }
+  // unit kerja list hanya muncul saat Input per Unit Kerja aktif
+  const sbUnits = document.getElementById('sb-units');
+  if (sbUnits) sbUnits.style.display = id === 'input' ? '' : 'none';
+  // live preview
+  if (id !== 'input') {
+    hideLivePreviewAll();
+  } else if (activeUnitId) {
+    updateLivePreview();
+    if (lpActive) _showPanel();
+  }
+}
+
+// ── WIKI HELPERS ──
+function wikiList(items, icon='•') {
+  return `<div style="display:flex;flex-direction:column;gap:5px">${items.map(i=>`
+    <div style="display:flex;gap:7px;align-items:flex-start;font-size:12px;color:var(--t2)">
+      <span style="color:var(--accent);flex-shrink:0;margin-top:1px">${icon}</span><span>${i}</span>
+    </div>`).join('')}</div>`;
+}
+function wikiBadges(items) {
+  return `<div style="display:flex;flex-direction:column;gap:6px">${items.map(([label,cls,desc])=>`
+    <div style="display:flex;align-items:center;gap:8px">
+      <span class="jb ${cls}" style="font-size:11px">${label}</span>
+      <span style="font-size:11.5px;color:var(--t2)">${desc}</span>
+    </div>`).join('')}</div>`;
+}
+function toggleWiki(id) {
+  const el = document.getElementById(id);
+  const chev = document.getElementById(id+'-chev');
+  if (!el) return;
+  const open = el.style.display !== 'none';
+  el.style.display = open ? 'none' : 'block';
+  if (chev) chev.textContent = open ? '▸' : '▾';
+}
+
+function goSec(id, btn) {
+  document.querySelectorAll('.sec-tab').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('sec-' + id)?.classList.add('active');
+  document.getElementById('sec-scroll').scrollTop = 0;
+}
+
+// ── MODAL ──
+function openModal(mode='add', unitId=null) {
+  modalMode = mode;
+  editingUnitId = unitId;
+  const modal = document.getElementById('modal');
+  const delBtn = document.getElementById('modal-delete-btn');
+
+  if (mode === 'edit' && unitId) {
+    const unit = units.find(u => u.id === unitId);
+    document.getElementById('modal-title').textContent = 'Edit Unit Kerja';
+    document.getElementById('modal-sub').textContent = 'Ubah informasi unit kerja';
+    document.getElementById('m-kl').value = unit.kl || '';
+    document.getElementById('m-name').value = unit.name;
+    document.getElementById('m-type').value = unit.type;
+    delBtn.style.display = 'block';
+  } else {
+    document.getElementById('modal-title').textContent = 'Tambah Unit Kerja';
+    document.getElementById('modal-sub').textContent = 'Masukkan informasi unit kerja';
+    document.getElementById('m-kl').value = window._defaultKL || '';
+    document.getElementById('m-name').value = '';
+    document.getElementById('m-type').value = 'upuk';
+    delBtn.style.display = 'none';
+  }
+  updateTypeDesc();
+  modal.classList.add('show');
+  setTimeout(() => document.getElementById('m-name').focus(), 100);
+}
+
+function editUnit() { openModal('edit', activeUnitId); }
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('show');
+}
+
+function updateTypeDesc() {
+  const type = document.getElementById('m-type').value;
+  document.getElementById('type-desc').textContent = TYPE_DESC[type];
+}
+
+function submitModal() {
+  const name = document.getElementById('m-name').value.trim();
+  const kl   = document.getElementById('m-kl').value.trim();
+  if (kl) window._defaultKL = kl; // remember for next unit
+  const type = document.getElementById('m-type').value;
+  if (!name) { document.getElementById('m-name').focus(); return; }
+
+  if (modalMode === 'add') {
+    const id = 'uk_' + Date.now();
+    units.push({ id, name, kl, type, data: {} });
+    saveToStorage();
+    renderSidebar();
+    selectUnit(id);
+    toast(`✓  Unit "${name}" ditambahkan`);
+  } else {
+    const unit = units.find(u => u.id === editingUnitId);
+    if (unit) {
+      unit.name = name;
+      unit.kl   = kl;
+      if (unit.type !== type) { unit.type = type; unit.data = {}; }
+      saveToStorage();
+      renderSidebar();
+      if (activeUnitId === editingUnitId) renderFormArea(unit);
+      toast(`✓  Unit "${name}" diperbarui`);
+    }
+  }
+  closeModal();
+}
+
+function deleteUnit() {
+  const unit = units.find(u => u.id === activeUnitId);
+  if (!unit) return;
+  openModal('edit', activeUnitId);
+}
+
+function confirmDeleteFromModal() {
+  const unit = units.find(u => u.id === editingUnitId);
+  if (!unit) return;
+  if (!confirm(`Hapus unit "${unit.name}"? Data akan hilang permanen.`)) return;
+  units = units.filter(u => u.id !== editingUnitId);
+  if (activeUnitId === editingUnitId) {
+    activeUnitId = null;
+    document.getElementById('form-area').style.display = 'none';
+    document.getElementById('empty-state').style.display = units.length ? 'none' : '';
+    if (units.length > 0) selectUnit(units[0].id);
+  }
+  saveToStorage();
+  renderSidebar();
+  closeModal();
+  toast('↺  Unit dihapus');
+}
+
+// ── CALC UP+UK ──
+function calc() {
+  const v = id => parseFloat(document.getElementById(id)?.value) || 0;
+  const s = (id, val) => { const e = document.getElementById(id); if (e) e.value = +(Math.round(val * 100) / 100); };
+
+  const d6=v('d6'),d7=v('d7'),d8=v('d8'),d10=v('d10');
+  const d16=v('d16'),d17=v('d17'),d19=v('d19');
+  const d22=v('d22'),d23=v('d23'),d27=v('d27');
+  const d48=v('d48'),d49=v('d49'),d50=v('d50'),d51=v('d51');
+
+  const g10 = d10 > 0 ? (d6 + d7) / d10 : 0;
+  const g16 = d16 * g10;
+  const g17 = g16 + d17;
+  const g19 = g17 + d19;
+  const g22 = d22 * g19;
+  const g24 = g22 + d23;
+
+  s('g8', d8*(d7+d6));
+  s('g10',g10); s('g16',g16); s('g17',g17); s('g19',g19);
+  s('g22',g22); s('g24',g24); s('g27',d27);
+  s('g50', g24+(d48*d50));
+  s('g51', d27+(d49*d51));
+  if (typeof updateLivePreview === 'function') updateLivePreview();
+}
+
+// ── CALC UP ONLY ──
+function calcUP() {
+  const v = id => parseFloat(document.getElementById(id)?.value)||0;
+  const s = (id,val) => { const e=document.getElementById(id); if(e) e.value=+(Math.round(val*100)/100); };
+
+  const d6=v('up_d6'),d7=v('up_d7'),d8=v('up_d8'),d10=v('up_d10');
+  const d16=v('up_d16'),d17=v('up_d17');
+  const d33=v('up_d33'),d34=v('up_d34');
+
+  const g10 = d10>0 ? (d6+d7)/d10 : 0;
+  const g16 = d16*g10;
+  const g17 = g16+d17;
+  const g22 = d33*g17;
+  const g24 = g22+d34;
+
+  s('up_g8',  d8*(d7+d6));
+  s('up_g10', g10); s('up_g16', g16); s('up_g17', g17);
+  s('up_g22', g22); s('up_g24', g24);
+  if (typeof updateLivePreview === 'function') updateLivePreview();
+}
+
+// ── TASK MAP (UP+UK) ──
+const TASKS = {
+  terampil:[
+    {u:'Membuat arsip',w:15,r:'d7'},{u:'Menerima arsip',w:15,r:'d6'},
+    {u:'Pemberkasan arsip aktif',w:25,r:'g10'},{u:'Menata arsip inaktif dipindahkan',w:15,r:'g17'},
+  ],
+  mahir:[
+    // row9:  D37 — pemberkasan arsip terjaga
+    {u:'Pemberkasan arsip terjaga',             w:10,   r:'d37'},
+    // row12-13: G17
+    {u:'Menyeleksi arsip inaktif usul pindah',  w:15,   r:'g17'},
+    {u:'Membuat daftar arsip inaktif usul pindah',w:15, r:'g17'},
+    // row14: D15, waktu=5*330=1650
+    {u:'Melaksanakan pemindahan arsip inaktif', w:1650, r:'d15'},
+    // row15: D12, waktu=5*330=1650 — layanan arsip aktif (laporan)
+    {u:'Memberikan layanan arsip aktif',        w:1650, r:'d12'},
+    // row16: D13, waktu=10 — jumlah nomor arsip aktif dilayani (sub-task HILANG)
+    {u:'Jumlah nomor arsip aktif dilayani',     w:10,   r:'d13'},
+    // row21: D61→UP!D59, waktu=5*330=1650
+    {u:'BINTEK Pengelolaan Arsip',              w:1650, r:'d59'},
+  ],
+  penyelia:[
+    {u:'Verifikasi autentisitas arsip tercipta',w:10,   r:'g8'},
+    {u:'Penataan & penyimpanan arsip inaktif',  w:10,   r:'g19'},
+    {u:'Identifikasi arsip untuk alih media',   w:1650, r:'d33'},
+    {u:'Identifikasi & alih media arsip dinamis',w:1650,r:'d34'},
+    {u:'Identifikasi arsip terjaga',            w:1650, r:'d36'},
+    {u:'Identifikasi arsip vital',              w:1650, r:'d40'},
+    {u:'Mengolah arsip vital',                  w:15,   r:'d41'},
+    {u:'Layanan arsip vital',                   w:1650, r:'d42'},
+    // row31: D44→UP!d43 — jumlah nomor arsip vital dilayani (sub-task, SEBELUMNYA HILANG)
+    {u:'Jumlah nomor arsip vital dilayani',     w:10,   r:'d43'},
+    // row32: D29 — layanan arsip inaktif (laporan)
+    {u:'Layanan arsip inaktif (laporan)',        w:1650, r:'d29'},
+    // row33: D30→UP!d30 — layanan arsip inaktif UK per nomor (sub-task, SEBELUMNYA HILANG)
+    {u:'Layanan arsip inaktif UK (nomor)',       w:15,   r:'d30'},
+    // row34: D31→UP!d31 — layanan arsip inaktif PPID per nomor (sub-task, SEBELUMNYA HILANG)
+    {u:'Layanan arsip inaktif PPID (nomor)',     w:30,   r:'d31'},
+    {u:'Identifikasi & pengolahan data arsip aktif', w:1650, r:'d76'},
+    {u:'Entry data arsip aktif (SIKN)',         w:10,   r:'d81'},
+    {u:'Entry data arsip inaktif (SIKN)',       w:10,   r:'d82'},
+    {u:'Entry data arsip vital (SIKN)',         w:10,   r:'d83'},
+    {u:'Entry data arsip terjaga (SIKN)',       w:10,   r:'d84'},
+  ],
+  pertama:[
+    {u:'Menyeleksi arsip inaktif usul musnah',w:1650,r:'sum_d21_d48'},
+    {u:'Membuat daftar arsip usul musnah',w:15,r:'g50'},
+    {u:'Melaksanakan pemusnahan arsip',w:15,r:'g50'},
+    {u:'Menyeleksi arsip inaktif usul serah',w:1650,r:'sum_d26_d48'},
+    {u:'Membuat daftar arsip usul serah',w:15,r:'g51'},
+    {u:'Melaksanakan penyerahan arsip',w:15,r:'g51'},
+    {u:'Penelusuran referensi SOP',w:2310,r:'d57'},
+    {u:'Identifikasi & pengolahan data arsip inaktif',w:1650,r:'d77'},
+    {u:'Identifikasi & pengolahan data arsip vital',w:1650,r:'d78'},
+  ],
+  muda:[
+    // row10: D21+D49 — FIXED: D49 = UK II tdk ada Ahli Muda (bukan D48)
+    {u:'Menilai arsip inaktif usul musnah',     w:1650, r:'sum_d21_d49'},
+    // row11: D26+D49 — FIXED
+    {u:'Menilai arsip inaktif usul serah',      w:1650, r:'sum_d26_d49'},
+    {u:'Layanan arsip terjaga',                 w:10,   r:'d38'},
+    {u:'BIMTEK SDM Kearsipan',                  w:1650, r:'d60'},
+    {u:'Penyuluhan Kearsipan',                  w:1650, r:'d61'},
+    {u:'Fasilitasi Kearsipan',                  w:1650, r:'d62'},
+    {u:'Monev sistem informasi kearsipan',      w:6600, r:'d63'},
+    {u:'Pengujian lapangan audit kearsipan',    w:1650, r:'d70'},
+    {u:'Wawancara audit kearsipan',             w:1650, r:'d70'},
+    {u:'Inventaris masalah NSPK',               w:990,  r:'d73'},
+    {u:'Menyusun konsepsi SOP',                 w:990,  r:'d57'},
+    // row87 task51: F=F86=D59→UP!d57, waktu=7*330=2310 (HILANG sebelumnya)
+    {u:'Menyusun rancangan SOP',                w:2310, r:'d57'},
+    {u:'Identifikasi & pengolahan data arsip terjaga', w:1650, r:'d79'},
+  ],
+  madya:[
+    // row17: D55→UP!d53 = Naskah Persetujuan Pemusnahan — DIHAPUS dari input (selalu 0 di Input all D53/D54)
+    // row21: D56→UP!d54 = Naskah Pertimbangan Pemusnahan — DIHAPUS
+    // row46: D67→UP!d65, waktu=5*330=1650
+    {u:'BIMKOS Penyelenggaraan Kearsipan',      w:1650, r:'d65'},
+    // row47: D68→UP!d66, waktu=10*330=3300
+    {u:'Supervisi penyelenggaraan kearsipan',   w:3300, r:'d66'},
+    // row61: D71→UP!d69 = RKA, waktu=10*330=3300
+    {u:'Rencana Kerja Audit Kearsipan (RKA)',   w:3300, r:'d69'},
+    // row62: D72→UP!d70, waktu=10*330=3300
+    {u:'Laporan audit kearsipan',               w:3300, r:'d70'},
+    // row63: D73→UP!d71, waktu=10*330=3300
+    {u:'Monev hasil pengawasan',                w:3300, r:'d71'},
+    // row69: D75→UP!d73, waktu=990
+    {u:'Menyusun referensi NSPK daerah/instansi',w:990, r:'d73'},
+    // row70: F=F69 (beban=d73), waktu=60*330=19800
+    {u:'Penyusunan naskah akademik NSPK',       w:19800,r:'d73'},
+    // row71: F=F70 (beban=d73), waktu=990
+    {u:'Konsepsi NSPK daerah/instansi',         w:990,  r:'d73'},
+  ],
+  utama:[
+    {u:'Evaluasi pengelolaan arsip dinamis',w:6300,r:null},
+    {u:'Evaluasi pengelolaan arsip statis',w:6300,r:null},
+    {u:'Penilaian kinerja semua jenjang',w:45,r:null},
+    {u:'Evaluasi pasca sertifikasi',w:4410,r:null},
+    {u:'Menyusun LHPKN',w:6300,r:null},
+    {u:'Telaah rekomendasi sanksi',w:1575,r:null},
+    {u:'Telaah pertimbangan penghargaan',w:3150,r:null},
+  ],
+};
+
+// ── TASKS untuk UP saja (field IDs pakai prefix up_) ──
+const UP_TASKS = {
+  terampil:[
+    {u:'Membuat arsip',                         w:15,   r:'up_d7'},
+    {u:'Menerima arsip',                        w:15,   r:'up_d6'},
+    {u:'Pemberkasan arsip aktif',               w:25,   r:'up_g10'},
+    {u:'Menata arsip inaktif yang dipindahkan', w:15,   r:'up_g17'},
+  ],
+  mahir:[
+    {u:'Pemberkasan arsip terjaga',             w:10,   r:'up_d24'},
+    {u:'Menyeleksi arsip inaktif usul pindah',  w:15,   r:'up_g17'},
+    {u:'Membuat daftar arsip usul pindah',      w:15,   r:'up_g17'},
+    {u:'Melaksanakan pemindahan arsip inaktif', w:1650, r:'up_d15'},
+    {u:'Memberikan layanan arsip aktif',        w:1650, r:'up_d12'},
+    {u:'Jumlah nomor arsip aktif dilayani',     w:10,   r:'up_d13'},
+    {u:'BINTEK Pengelolaan Arsip',              w:1650, r:'up_d39'},
+  ],
+  penyelia:[
+    {u:'Verifikasi autentisitas arsip tercipta',w:10,   r:'up_g8'},
+    {u:'Penataan & penyimpanan arsip inaktif',  w:10,   r:'up_g17'}, // G19=G17 (tidak ada UK)
+    {u:'Identifikasi arsip untuk alih media',   w:1650, r:'up_d21'},
+    {u:'Identifikasi & alih media arsip dinamis',w:1650,r:'up_d22'},
+    {u:'Identifikasi arsip vital',              w:1650, r:'up_d27'},
+    {u:'Mengolah arsip vital',                  w:15,   r:'up_d28'},
+    {u:'Layanan arsip vital',                   w:1650, r:'up_d29'},
+    {u:'Jumlah nomor arsip vital dilayani',     w:10,   r:'up_d30'},
+    {u:'Layanan arsip inaktif PPID (nomor)',    w:30,   r:'up_d19'},
+    {u:'Identifikasi & pengolahan data arsip aktif',w:1650,r:'up_d45'},
+    {u:'Entry data arsip aktif (SIKN)',         w:10,   r:'up_d46'},
+  ],
+  pertama:[
+    {u:'Menyeleksi arsip inaktif usul musnah',  w:1650, r:'up_d32'}, // D48=0 hardcode
+    {u:'Membuat daftar arsip usul musnah',      w:15,   r:'up_g24'},
+    {u:'Melaksanakan pemusnahan arsip',         w:15,   r:'up_g24'},
+    {u:'Penelusuran referensi SOP',             w:2310, r:'up_d37'},
+  ],
+  muda:[
+    {u:'Menilai arsip inaktif usul musnah',     w:1650, r:'up_d32'}, // D49=0 hardcode
+    {u:'Layanan arsip terjaga',                 w:10,   r:'up_d25'},
+    {u:'BIMTEK SDM Kearsipan',                  w:1650, r:'up_d40'},
+    {u:'Penyuluhan Kearsipan',                  w:1650, r:'up_d41'},
+    {u:'Fasilitasi Kearsipan',                  w:1650, r:'up_d42'},
+    {u:'Monev sistem informasi kearsipan',      w:6600, r:'up_d43'},
+    {u:'Menyusun konsepsi SOP',                 w:990,  r:'up_d37'},
+    {u:'Menyusun rancangan SOP',                w:2310, r:'up_d37'},
+  ],
+  madya:[], utama:[],
+};
+const JAB_KEYS = ['terampil','mahir','penyelia','pertama','muda','madya','utama'];
+const JAB_LABELS = ['Terampil','Mahir','Penyelia','Ahli Pertama','Ahli Muda','Ahli Madya','Ahli Utama'];
+const JAB_FULL = ['Arsiparis Terampil Pelaksana','Arsiparis Mahir Pelaksana Lanjutan','Arsiparis Penyelia','Arsiparis Ahli Pertama','Arsiparis Ahli Muda','Arsiparis Ahli Madya','Arsiparis Ahli Utama'];
+
+function gv(r) {
+  if (!r) return 0;
+  if (r==='sum_d21_d48') return (parseFloat(document.getElementById('d21')?.value)||0)+(parseFloat(document.getElementById('d48')?.value)||0);
+  if (r==='sum_d26_d48') return (parseFloat(document.getElementById('d26')?.value)||0)+(parseFloat(document.getElementById('d48')?.value)||0);
+  if (r==='sum_d21_d49') return (parseFloat(document.getElementById('d21')?.value)||0)+(parseFloat(document.getElementById('d49')?.value)||0);
+  if (r==='sum_d26_d49') return (parseFloat(document.getElementById('d26')?.value)||0)+(parseFloat(document.getElementById('d49')?.value)||0);
+  const e = document.getElementById(r);
+  return e ? parseFloat(e.value)||0 : 0;
+}
+
+function r51(x) { return (x - Math.floor(x)) >= 0.51 ? Math.ceil(x) : Math.floor(x); }
+
+function calcUnit(data, type) {
+  const isUP = type === 'up';
+  const tasks = isUP ? UP_TASKS : TASKS;
+  const v = k => data[k] || 0;
+  let derived;
+
+  if (isUP) {
+    const g10 = v('up_d10')>0 ? (v('up_d6')+v('up_d7'))/v('up_d10') : 0;
+    const g16 = v('up_d16')*g10, g17 = g16+v('up_d17');
+    const g22 = v('up_d33')*g17, g24 = g22+v('up_d34');
+    derived = {...data,
+      up_g8:  v('up_d8')*(v('up_d7')+v('up_d6')),
+      up_g10: g10, up_g16: g16, up_g17: g17,
+      up_g22: g22, up_g24: g24,
+    };
+  } else {
+    const g10 = v('d10')>0 ? (v('d6')+v('d7'))/v('d10') : 0;
+    const g16=v('d16')*g10, g17=g16+v('d17'), g19=g17+v('d19');
+    const g22=v('d22')*g19, g24=g22+v('d23'), g27=v('d27');
+    const g50=g24+(v('d48')*v('d50')), g51=g27+(v('d49')*v('d51'));
+    derived = {...data,
+      g8:v('d8')*(v('d7')+v('d6')), g10,g16,g17,g19,g22,g24,g27,g50,g51
+    };
+  }
+
+  return JAB_KEYS.map(key => {
+    let m = 0;
+    (tasks[key]||[]).forEach(t => {
+      let val = 0;
+      if (!t.r) val = 0;
+      else if (t.r==='sum_d21_d48') val=(derived.d21||0)+(derived.d48||0);
+      else if (t.r==='sum_d26_d48') val=(derived.d26||0)+(derived.d48||0);
+      else if (t.r==='sum_d21_d49') val=(derived.d21||0)+(derived.d49||0);
+      else if (t.r==='sum_d26_d49') val=(derived.d26||0)+(derived.d49||0);
+      else val = derived[t.r] || 0;
+      m += t.w * val;
+    });
+    return r51(m / WKE);
+  });
+}
+
+// ── REKAP ALL UNITS ──
+function renderRekap() {
+  showAllView();
+  const tbody = document.getElementById('rekap-unit-tbody');
+  const cards = document.getElementById('rekap-cards');
+  const totals = [0,0,0,0,0,0,0];
+
+  tbody.innerHTML = '';
+  units.forEach(u => {
+    const res = calcUnit(u.data || {}, u.type);
+    const rowTotal = res.reduce((a,b)=>a+b,0);
+    res.forEach((v,i) => totals[i] += v);
+    tbody.innerHTML += `
+      <tr style="cursor:pointer" onclick="showUnitDetail('${u.id}')" class="unit-row-hover">
+        <td style="font-weight:500;color:var(--accent)">${u.name}</td>
+        <td style="color:var(--t3);font-size:11.5px">${u.kl||'—'}</td>
+        <td><span class="unit-type ${u.type==='upuk'?'type-upuk':'type-up'}">${u.type==='upuk'?'UP+UK':'UP'}</span></td>
+        ${res.map(v=>`<td class="mono" style="text-align:right">${v||'—'}</td>`).join('')}
+        <td class="mono acc">${rowTotal}</td>
+      </tr>`;
+  });
+
+  totals.forEach((v,i) => { document.getElementById(`rt-${i}`).textContent = v || '—'; });
+  document.getElementById('rt-total').textContent = totals.reduce((a,b)=>a+b,0);
+  document.getElementById('rekap-count').textContent = `${units.length} unit`;
+
+  cards.innerHTML = JAB_FULL.map((label,i) => `
+    <div class="rk-card rk-${i}">
+      <div class="rk-lbl">${label}</div>
+      <div class="rk-val">${totals[i]}</div>
+      <div class="rk-sub">orang · semua unit</div>
+    </div>`).join('');
+  setTimeout(renderRekapChart, 50);
+}
+
+// ── REKAP DETAIL PER UNIT ──
+function showUnitDetail(unitId) {
+  const unit = units.find(u => u.id === unitId);
+  if (!unit) return;
+
+  // switch view
+  document.getElementById('view-all').style.display = 'none';
+  document.getElementById('view-unit').style.display = 'block';
+
+  // header
+  document.getElementById('detail-name').textContent = unit.name;
+  document.getElementById('detail-breadcrumb').textContent = unit.name;
+  document.getElementById('detail-type-label').textContent = unit.type === 'upuk' ? 'UP + UK I' : 'UP Saja';
+  const badge = document.getElementById('detail-type-badge');
+  if (unit.type === 'upuk') {
+    badge.textContent = 'UP + UK I';
+    badge.style.cssText = 'background:#ede9fe;color:#6d28d9;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;margin-left:auto';
+  } else {
+    badge.textContent = 'UP Saja';
+    badge.style.cssText = 'background:#e0f2fe;color:#0369a1;font-size:11px;font-weight:600;padding:2px 10px;border-radius:20px;margin-left:auto';
+  }
+
+  // tombol ke input
+  document.getElementById('detail-goto-input').onclick = () => {
+    selectUnit(unitId);
+    goMain('input');
+  };
+
+  // hitung detail
+  const data = unit.data || {};
+  const v = k => data[k] || 0;
+  const isUP = unit.type === 'up';
+  let derived;
+  let taskMap;
+
+  if (isUP) {
+    const g10 = v('up_d10')>0 ? (v('up_d6')+v('up_d7'))/v('up_d10') : 0;
+    const g16 = v('up_d16')*g10, g17 = g16+v('up_d17');
+    const g22 = v('up_d33')*g17, g24 = g22+v('up_d34');
+    derived = {...data, up_g8:v('up_d8')*(v('up_d7')+v('up_d6')),
+      up_g10:g10, up_g16:g16, up_g17:g17, up_g22:g22, up_g24:g24};
+    taskMap = UP_TASKS;
+  } else {
+    const g10 = v('d10')>0 ? (v('d6')+v('d7'))/v('d10') : 0;
+    const g16=v('d16')*g10, g17=g16+v('d17'), g19=g17+v('d19');
+    const g22=v('d22')*g19, g24=g22+v('d23'), g27=v('d27');
+    const g50=g24+(v('d48')*v('d50')), g51=g27+(v('d49')*v('d51'));
+    derived = {...data, g8:v('d8')*(v('d7')+v('d6')), g10,g16,g17,g19,g22,g24,g27,g50,g51};
+    taskMap = TASKS;
+  }
+
+  const cards   = document.getElementById('detail-cards');
+  const tbody   = document.getElementById('detail-tbody');
+  cards.innerHTML = ''; tbody.innerHTML = '';
+
+  let totBeban = 0, totOrg = 0;
+
+  JAB_KEYS.forEach((key, ci) => {
+    let menit = 0;
+    (taskMap[key]||[]).forEach(t => {
+      let val = 0;
+      if (!t.r) val = 0;
+      else if (t.r==='sum_d21_d48') val=(derived.d21||0)+(derived.d48||0);
+      else if (t.r==='sum_d26_d48') val=(derived.d26||0)+(derived.d48||0);
+      else if (t.r==='sum_d21_d49') val=(derived.d21||0)+(derived.d49||0);
+      else if (t.r==='sum_d26_d49') val=(derived.d26||0)+(derived.d49||0);
+      else val = derived[t.r] || 0;
+      menit += t.w * val;
+    });
+    const presisi = menit / WKE;
+    const bulat   = r51(presisi);
+    totBeban += menit; totOrg += bulat;
+
+    cards.innerHTML += `
+      <div class="rk-card rk-${ci}">
+        <div class="rk-lbl">${JAB_FULL[ci]}</div>
+        <div class="rk-val">${bulat}</div>
+        <div class="rk-sub">${presisi.toFixed(3)} presisi</div>
+      </div>`;
+
+    tbody.innerHTML += `
+      <tr>
+        <td>${JAB_FULL[ci]}</td>
+        <td class="mono">${menit.toLocaleString('id')}</td>
+        <td class="mono" style="color:var(--t3)">75.000</td>
+        <td class="mono">${presisi.toFixed(4)}</td>
+        <td class="acc">${bulat}</td>
+      </tr>`;
+  });
+
+  document.getElementById('detail-total-beban').textContent = totBeban.toLocaleString('id');
+  document.getElementById('detail-total-org').textContent   = totOrg;
+
+  // draw chart
+  const res = JAB_KEYS.map((key,ci) => {
+    let m = 0;
+    (taskMap[key]||[]).forEach(t => {
+      let val = 0;
+      if (!t.r) val = 0;
+      else if (t.r==='sum_d21_d48') val=(derived.d21||0)+(derived.d48||0);
+      else if (t.r==='sum_d26_d48') val=(derived.d26||0)+(derived.d48||0);
+      else if (t.r==='sum_d21_d49') val=(derived.d21||0)+(derived.d49||0);
+      else if (t.r==='sum_d26_d49') val=(derived.d26||0)+(derived.d49||0);
+      else val = derived[t.r] || 0;
+      m += t.w * val;
+    });
+    return r51(m / WKE);
+  });
+  setTimeout(() => renderDetailChart(res), 50);
+
+  // scroll to top
+  document.querySelector('#page-rekap .sec-scroll').scrollTop = 0;
+}
+
+function showAllView() {
+  document.getElementById('view-all').style.display  = 'block';
+  document.getElementById('view-unit').style.display = 'none';
+  document.querySelector('#page-rekap .sec-scroll').scrollTop = 0;
+}
+
+// ── EXPORT ──
+function exportExcel() {
+  if (activeUnitId) pullFormValues();
+  const wb = XLSX.utils.book_new();
+  const kl = units.length > 0 ? (units[0].kl || 'Kementerian / Lembaga') : 'Kementerian / Lembaga';
+  const tgl = new Date().toLocaleDateString('id-ID', {day:'2-digit',month:'long',year:'numeric'});
+
+  // ── SHEET REKAP ──
+  const wsData = [];
+
+  // Baris 1-2: kosong
+  wsData.push([]);
+  wsData.push([]);
+
+  // Baris 3: judul blok
+  wsData.push(['', '', '', 'KEBUTUHAN JF ARSIPARIS', '', '', '', '', '', '']);
+
+  // Baris 4: header kolom
+  wsData.push(['No', 'NAMA UNIT KERJA', 'TIPE', 'TERAMPIL', 'MAHIR', 'PENYELIA', 'AHLI PERTAMA', 'AHLI MUDA', 'AHLI MADYA', 'TOTAL']);
+
+  // Baris data
+  let totals = [0,0,0,0,0,0,0];
+  units.forEach((u, idx) => {
+    const res = calcUnit(u.data||{}, u.type);
+    res.forEach((v,i) => totals[i] += v);
+    const rowTotal = res.reduce((a,b)=>a+b,0);
+    wsData.push([
+      idx+1,
+      `${u.kl ? u.kl + ' : ' : ''}${u.name}`,
+      u.type==='upuk' ? 'UP + UK I' : 'UP',
+      res[0]||0, res[1]||0, res[2]||0, res[3]||0, res[4]||0, res[5]||0,
+      rowTotal
+    ]);
+  });
+
+  // Baris total
+  wsData.push([
+    '', 'TOTAL', '',
+    totals[0], totals[1], totals[2], totals[3], totals[4], totals[5],
+    totals.reduce((a,b)=>a+b,0)
+  ]);
+
+  const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+  // Merge header "KEBUTUHAN JF ARSIPARIS" → C3:J3
+  ws['!merges'] = [
+    {s:{r:2,c:3}, e:{r:2,c:9}},  // KEBUTUHAN JF ARSIPARIS
+  ];
+
+  // Column widths
+  ws['!cols'] = [
+    {wch:5},   // No
+    {wch:42},  // Nama unit
+    {wch:10},  // Tipe
+    {wch:10},  // Terampil
+    {wch:8},   // Mahir
+    {wch:10},  // Penyelia
+    {wch:13},  // Ahli Pertama
+    {wch:11},  // Ahli Muda
+    {wch:11},  // Ahli Madya
+    {wch:8},   // Total
+  ];
+
+  XLSX.utils.book_append_sheet(wb, ws, 'Rekap Kebutuhan');
+
+  // ── SHEET PER UNIT (detail) ──
+  units.forEach(u => {
+    const res = calcUnit(u.data||{}, u.type);
+    const sheetData = [
+      [`Unit Kerja: ${u.name}`],
+      [`K/L: ${u.kl||'-'}`],
+      [`Tipe: ${u.type==='upuk'?'UP + UK I':'Unit Pengolah'}`],
+      [],
+      ['Jabatan Fungsional', 'Kebutuhan (Orang)'],
+    ];
+    JAB_FULL.forEach((jab, i) => {
+      sheetData.push([jab, res[i]||0]);
+    });
+    sheetData.push(['TOTAL', res.reduce((a,b)=>a+b,0)]);
+
+    const wsUnit = XLSX.utils.aoa_to_sheet(sheetData);
+    wsUnit['!cols'] = [{wch:35},{wch:18}];
+    // Nama sheet maks 31 karakter
+    const sheetName = u.name.replace(/[\\/:*?\[\]]/g,'').slice(0,28);
+    XLSX.utils.book_append_sheet(wb, wsUnit, sheetName || `Unit ${units.indexOf(u)+1}`);
+  });
+
+  const fname = `Kebutuhan_JFA_${kl.replace(/[^a-zA-Z0-9]/g,'_')}_${new Date().toISOString().slice(0,10)}.xlsx`;
+  XLSX.writeFile(wb, fname);
+  toast('⬇  File Excel diunduh');
+}
+
+// ── TOAST ──
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ── HTML RENDERERS ──
+function row(no, uraian, satuan, unit, jab, id, isComp=false, compDesc='', calcFn='calc()') {
+  if (isComp) return `
+    <tr class="tr-comp">
+      <td class="no-c">↳</td>
+      <td class="desc-c">${compDesc}</td>
+      <td></td><td></td><td></td>
+      <td><input class="ni ni-c" readonly id="${id}" value="0"></td>
+    </tr>`;
+  return `
+    <tr>
+      <td class="no">${no}</td>
+      <td>${uraian}</td>
+      <td class="sat">${satuan}</td>
+      <td>${unit}</td>
+      <td>${jab}</td>
+      <td><input class="ni" type="number" min="0" id="${id}" value="0" oninput="${calcFn}"></td>
+    </tr>`;
+}
+function sec(label) { return `<tr class="tr-sec"><td colspan="6">${label}</td></tr>`; }
+function up(cls,txt){return `<span class="utag ${cls}">${txt}</span>`}
+function jb(...cls_txt){return `<div class="jw">${cls_txt.map(([c,t])=>`<span class="jb ${c}">${t}</span>`).join('')}</div>`}
+
+function renderPAD() {
+  return `
+  <div class="section active" id="sec-pad">
+  <div class="card">
+    <div class="card-hdr"><h3>Pengelolaan Arsip Dinamis</h3><div class="cpill">PAD</div></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-d" style="background:#bae6fd"></div>Unit Pengolah</div>
+      <div class="leg"><div class="leg-d" style="background:#e9d5ff"></div>Unit Kearsipan</div>
+      <div class="leg"><div class="leg-d" style="background:#bbf7d0"></div>UP + UK</div>
+      <div class="leg"><div class="leg-d" style="background:#86efac"></div>Computed (otomatis)</div>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:36px">No</th><th>Uraian</th><th style="width:175px">Satuan</th><th style="width:74px">Unit</th><th style="width:155px">Jabatan</th><th class="r" style="width:108px">Nilai</th></tr></thead>
+      <tbody>
+        ${sec('Arsip Aktif')}
+        ${row(1,'Penerimaan Arsip','Nomor per Tahun',up('u-both','UP+UK'),jb(['jb-t','Terampil']),'d6')}
+        ${row(2,'Pembuatan Arsip','Nomor per Tahun',up('u-both','UP+UK'),jb(['jb-t','Terampil']),'d7')}
+        ${row(3,'Persentase Arsip Diverifikasi Autentisitas','% desimal (0–1)',up('u-up','UP'),jb(['jb-p','Penyelia']),'d8')}
+        ${row(0,'','','','','g8',true,'Arsip diverifikasi = d8 × (Penerimaan + Pembuatan)')}
+        ${row(4,'Rasio Pemberkasan Arsip','Item/Berkas (÷5/÷15/÷30)',up('u-up','UP'),jb(['jb-t','Terampil']),'d10')}
+        ${row(0,'','','','','g10',true,'Nomor Berkas = (Penerimaan + Pembuatan) ÷ Rasio')}
+        ${row(5,'Layanan Arsip Aktif di Central File','Laporan per tahun',up('u-up','UP'),jb(['jb-m','Mahir']),'d12')}
+        ${row(6,'Jumlah nomor arsip aktif yang dilayani','Nomor per tahun',up('u-up','UP'),jb(['jb-m','Mahir']),'d13')}
+        ${sec('Pemindahan & Arsip Inaktif')}
+        ${row(7,'Pemindahan Arsip','Kegiatan per Tahun',up('u-up','UP'),jb(['jb-t','Terampil'],['jb-m','Mahir']),'d15')}
+        ${row(8,'Persentase Arsip Usul Pindah','% desimal (0–1)',up('u-up','UP'),jb(['jb-m','Mahir']),'d16')}
+        ${row(0,'','','','','g16',true,'Nomor Berkas Usul Pindah = d16 × Nomor Berkas')}
+        ${row(9,'Arsip Inaktif masih di UP (tambahan)','Nomor Berkas',up('u-up','UP'),jb(['jb-m','Mahir'],['jb-p','Penyelia']),'d17')}
+        ${row(0,'','','','','g17',true,'Total Arsip Usul Pindah = g16 + d17')}
+        ${row(10,'Arsip Inaktif sudah ada di UK sebelumnya','Nomor Berkas',up('u-uk','UK'),jb(['jb-p','Penyelia']),'d19')}
+        ${row(0,'','','','','g19',true,'Total Inaktif di UK = g17 + d19')}
+        ${sec('Pemusnahan & Penyerahan')}
+        ${row(11,'Pemusnahan Arsip','Laporan per tahun',up('u-uk','UK'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'d21')}
+        ${row(12,'Persentase Arsip Usul Musnah dari Inaktif','% desimal (0–1)',up('u-uk','UK'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'d22')}
+        ${row(0,'','','','','g22',true,'Berkas Usul Musnah (Tahun -1) = d22 × Total Inaktif UK')}
+        ${row(13,'Arsip Usul Musnah Tambahan (Tahun -2)','Nomor Berkas',up('u-none','—'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'d23')}
+        ${row(0,'','','','','g24',true,'Total Berkas Usul Musnah = g22 + d23')}
+        ${row(14,'Penyerahan Arsip Statis ke Lembaga Kearsipan','Laporan per tahun',up('u-uk','UK'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'d26')}
+        ${row(15,'Jumlah Arsip Statis yang diserahkan','Nomor Berkas',up('u-uk','UK'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'d27')}
+        ${row(0,'','','','','g27',true,'Nomor Berkas Usul Serah = d27')}
+        ${sec('Layanan Arsip Inaktif')}
+        ${row(16,'Layanan Arsip Inaktif di Record Center','Laporan per tahun',up('u-uk','UK'),jb(['jb-p','Penyelia']),'d29')}
+        ${row(17,'Nomor arsip inaktif dilayani di Unit Kearsipan','Nomor per tahun',up('u-uk','UK'),jb(['jb-p','Penyelia']),'d30')}
+        ${row(18,'Nomor arsip inaktif dilayani di PPID','Nomor per tahun',up('u-up','UP'),jb(['jb-p','Penyelia']),'d31')}
+        ${sec('Alih Media & Arsip Khusus')}
+        ${row(19,'Identifikasi Alih Media Arsip untuk Autentikasi','Laporan per tahun',up('u-both','UP+UK'),jb(['jb-p','Penyelia']),'d33')}
+        ${row(20,'Identifikasi dan Alih Media Arsip Dinamis','Laporan per tahun',up('u-both','UP+UK'),jb(['jb-p','Penyelia']),'d34')}
+        ${row(21,'Identifikasi Arsip Terjaga','Laporan per tahun',up('u-uk','UK'),jb(['jb-p','Penyelia']),'d36')}
+        ${row(22,'Pemberkasan Arsip Terjaga','Nomor Arsip Terjaga',up('u-up','UP'),jb(['jb-m','Mahir']),'d37')}
+        ${row(23,'Layanan Arsip Terjaga','Laporan',up('u-both','UP+UK'),jb(['jb-am','Ahli Muda']),'d38')}
+        ${row(24,'Identifikasi Arsip Vital','Laporan per tahun',up('u-both','UP+UK'),jb(['jb-p','Penyelia']),'d40')}
+        ${row(25,'Mengolah Arsip Vital','Nomor',up('u-both','UP+UK'),jb(['jb-p','Penyelia']),'d41')}
+        ${row(26,'Layanan Arsip Vital','Laporan per tahun',up('u-both','UP+UK'),jb(['jb-p','Penyelia']),'d42')}
+        ${row(27,'Jumlah Arsip Vital yang dilayani','Nomor per tahun',up('u-both','UP+UK'),jb(['jb-p','Penyelia']),'d43')}
+        ${sec('Distribusi Beban ke UK II')}
+        ${row(28,'Jumlah UK II tidak ada Ahli Pertama','Unit',up('u-none','—'),jb(['jb-ap','Ahli Pertama']),'d48')}
+        ${row(29,'Jumlah UK II tidak ada Ahli Muda','Unit',up('u-none','—'),jb(['jb-am','Ahli Muda']),'d49')}
+        ${row(30,'Rata-rata berkas usul musnah di UK II','Nomor Berkas / UK',up('u-none','—'),jb(['jb-ap','Ahli Pertama']),'d50')}
+        ${row(0,'','','','','g50',true,'Total Berkas Usul Musnah + UK II = g24 + (d48 × d50)')}
+        ${row(31,'Rata-rata berkas usul serah di UK II','Nomor Berkas / UK',up('u-none','—'),jb(['jb-am','Ahli Muda']),'d51')}
+        ${row(0,'','','','','g51',true,'Total Berkas Usul Serah + UK II = g27 + (d49 × d51)')}
+      </tbody>
+    </table></div>
+  </div>
+  </div>`;
+}
+
+function renderPK() {
+  return `
+  <div class="section" id="sec-pk">
+  <div class="card">
+    <div class="card-hdr"><h3>Pembinaan Kearsipan</h3><div class="cpill">PK</div></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>No</th><th>Uraian</th><th>Satuan</th><th>Unit</th><th>Jabatan</th><th class="r">Nilai</th></tr></thead>
+      <tbody>
+        ${row('P1','Penyusunan SOP Kearsipan','SOP per tahun',up('u-uk','UK'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'d57')}
+        ${row('P2','BIMTEK Pengelolaan Arsip','Laporan per tahun',up('u-uk','UK'),jb(['jb-m','Mahir']),'d59')}
+        ${row('P3','BIMTEK SDM Kearsipan','Laporan per tahun',up('u-uk','UK'),jb(['jb-am','Ahli Muda']),'d60')}
+        ${row('P4','Penyuluhan Kearsipan','Laporan per tahun',up('u-uk','UK'),jb(['jb-am','Ahli Muda']),'d61')}
+        ${row('P5','Fasilitasi Kearsipan','Laporan per tahun',up('u-uk','UK'),jb(['jb-am','Ahli Muda']),'d62')}
+        ${row('P6','Monev Sistem Kearsipan','Laporan per tahun',up('u-uk','UK'),jb(['jb-am','Ahli Muda']),'d63')}
+        ${row('P7','BIMKOS Penyelenggaraan Kearsipan','Laporan per tahun',up('u-uk','UK'),jb(['jb-ad','Ahli Madya']),'d65')}
+        ${row('P8','Supervisi Penyelenggaraan Kearsipan','Laporan per tahun',up('u-uk','UK'),jb(['jb-ad','Ahli Madya']),'d66')}
+        ${row('P9','Rencana Audit Kearsipan','Laporan per tahun',up('u-uk','UK'),jb(['jb-ad','Ahli Madya']),'d69')}
+        ${row('P10','Laporan Audit Kearsipan','IP yang di Audit',up('u-uk','UK'),jb(['jb-am','Ahli Muda'],['jb-ad','Ahli Madya']),'d70')}
+        ${row('P11','Monev Hasil Pengawasan','IP yang di Monev',up('u-uk','UK'),jb(['jb-ad','Ahli Madya']),'d71')}
+        ${row('P12','Menyusun NSPK tingkat daerah dan instansi','DIM/NSPK',up('u-uk','UK'),jb(['jb-am','Ahli Muda'],['jb-ad','Ahli Madya']),'d73')}
+      </tbody>
+    </table></div>
+  </div>
+  </div>`;
+}
+
+function renderSIKN() {
+  return `
+  <div class="section" id="sec-sikn">
+  <div class="card">
+    <div class="card-hdr"><h3>Pengolahan & Penyajian Arsip menjadi Informasi</h3><div class="cpill">SIKN</div></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>No</th><th>Uraian</th><th>Satuan</th><th>Unit</th><th>Jabatan</th><th class="r">Nilai</th></tr></thead>
+      <tbody>
+        ${row('I1','Identifikasi & pengolahan data Arsip Aktif','Laporan per tahun',up('u-up','UP'),jb(['jb-p','Penyelia']),'d76')}
+        ${row('I2','Identifikasi & pengolahan data Arsip Inaktif','Laporan per tahun',up('u-uk','UK'),jb(['jb-ap','Ahli Pertama']),'d77')}
+        ${row('I3','Identifikasi & pengolahan data Arsip Vital','Laporan per tahun',up('u-uk','UK'),jb(['jb-ap','Ahli Pertama']),'d78')}
+        ${row('I4','Identifikasi & pengolahan data Arsip Terjaga','Laporan per tahun',up('u-uk','UK'),jb(['jb-am','Ahli Muda']),'d79')}
+        ${row('I5','Entry Data Arsip Aktif','Nomor',up('u-up','UP'),jb(['jb-p','Penyelia']),'d81')}
+        ${row('I6','Entry Data Arsip Inaktif','Nomor',up('u-uk','UK'),jb(['jb-p','Penyelia']),'d82')}
+        ${row('I7','Entry Data Arsip Vital','Nomor',up('u-uk','UK'),jb(['jb-p','Penyelia']),'d83')}
+        ${row('I8','Entry Data Arsip Terjaga','Nomor',up('u-uk','UK'),jb(['jb-p','Penyelia']),'d84')}
+      </tbody>
+    </table></div>
+  </div>
+  </div>`;
+}
+
+function renderPAD_UP() {
+  return `
+  <div class="section active" id="sec-pad-up">
+  <div class="card">
+    <div class="card-hdr"><h3>Pengelolaan Arsip Dinamis</h3><div class="cpill">UP</div></div>
+    <div class="legend">
+      <div class="leg"><div class="leg-d" style="background:#bae6fd"></div>Unit Pengolah</div>
+      <div class="leg"><div class="leg-d" style="background:#86efac"></div>Computed (otomatis)</div>
+    </div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th style="width:36px">No</th><th>Uraian</th><th style="width:175px">Satuan</th><th style="width:74px">Unit</th><th style="width:155px">Jabatan</th><th class="r" style="width:108px">Nilai</th></tr></thead>
+      <tbody>
+        ${sec('Arsip Aktif')}
+        ${row(1,'Penerimaan Arsip','Nomor per Tahun',up('u-up','UP'),jb(['jb-t','Terampil']),'up_d6',false,'','calcUP()')}
+        ${row(2,'Pembuatan Arsip','Nomor per Tahun',up('u-up','UP'),jb(['jb-t','Terampil']),'up_d7',false,'','calcUP()')}
+        ${row(3,'Persentase Arsip Diverifikasi Autentisitas','% desimal (0–1)',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d8',false,'','calcUP()')}
+        ${row(0,'','','','','up_g8',true,'Arsip diverifikasi = d8 × (Penerimaan + Pembuatan)')}
+        ${row(4,'Rasio Pemberkasan Arsip','Item/Berkas (÷5/÷15/÷30)',up('u-up','UP'),jb(['jb-t','Terampil']),'up_d10',false,'','calcUP()')}
+        ${row(0,'','','','','up_g10',true,'Nomor Berkas = (Penerimaan + Pembuatan) ÷ Rasio')}
+        ${row(5,'Layanan Arsip Aktif di Central File','Laporan per tahun',up('u-up','UP'),jb(['jb-m','Mahir']),'up_d12',false,'','calcUP()')}
+        ${row(6,'Jumlah nomor arsip aktif yang dilayani','Nomor per tahun',up('u-up','UP'),jb(['jb-m','Mahir']),'up_d13',false,'','calcUP()')}
+        ${sec('Pemindahan & Arsip Inaktif')}
+        ${row(7,'Pemindahan Arsip','Kegiatan per Tahun',up('u-up','UP'),jb(['jb-t','Terampil'],['jb-m','Mahir']),'up_d15',false,'','calcUP()')}
+        ${row(8,'Persentase Arsip Usul Pindah','% desimal (0–1)',up('u-up','UP'),jb(['jb-m','Mahir']),'up_d16',false,'','calcUP()')}
+        ${row(0,'','','','','up_g16',true,'Nomor Berkas Usul Pindah = d16 × Nomor Berkas')}
+        ${row(9,'Arsip Inaktif masih di UP (tambahan)','Nomor Berkas',up('u-up','UP'),jb(['jb-m','Mahir'],['jb-p','Penyelia']),'up_d17',false,'','calcUP()')}
+        ${row(0,'','','','','up_g17',true,'Total Arsip Usul Pindah = g16 + d17')}
+        ${row(10,'Nomor arsip inaktif dilayani di PPID','Nomor per tahun',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d19',false,'','calcUP()')}
+        ${sec('Pemusnahan')}
+        ${row(11,'Pemusnahan Arsip','Laporan per tahun',up('u-up','UP'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'up_d32',false,'','calcUP()')}
+        ${row(12,'Persentase Arsip Usul Musnah dari Inaktif','% desimal (0–1)',up('u-up','UP'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'up_d33',false,'','calcUP()')}
+        ${row(0,'','','','','up_g22',true,'Berkas Usul Musnah (Tahun -1) = d33 × Total Inaktif UP')}
+        ${row(13,'Arsip Usul Musnah Tambahan (Tahun -2)','Nomor Berkas',up('u-none','—'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'up_d34',false,'','calcUP()')}
+        ${row(0,'','','','','up_g24',true,'Total Berkas Usul Musnah = g22 + d34')}
+        ${sec('Alih Media & Arsip Khusus')}
+        ${row(14,'Identifikasi Alih Media Arsip untuk Autentikasi','Laporan per tahun',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d21',false,'','calcUP()')}
+        ${row(15,'Identifikasi dan Alih Media Arsip Dinamis','Laporan per tahun',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d22',false,'','calcUP()')}
+        ${row(16,'Pemberkasan Arsip Terjaga','Nomor Arsip Terjaga',up('u-up','UP'),jb(['jb-m','Mahir']),'up_d24',false,'','calcUP()')}
+        ${row(17,'Layanan Arsip Terjaga','Laporan',up('u-up','UP'),jb(['jb-am','Ahli Muda']),'up_d25',false,'','calcUP()')}
+        ${row(18,'Identifikasi Arsip Vital','Laporan per tahun',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d27',false,'','calcUP()')}
+        ${row(19,'Mengolah Arsip Vital','Nomor',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d28',false,'','calcUP()')}
+        ${row(20,'Layanan Arsip Vital','Laporan per tahun',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d29',false,'','calcUP()')}
+        ${row(21,'Jumlah Arsip Vital yang dilayani','Nomor per tahun',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d30',false,'','calcUP()')}
+      </tbody>
+    </table></div>
+  </div>
+  </div>`;
+}
+
+function renderPK_UP() {
+  return `
+  <div class="section" id="sec-pk-up">
+  <div class="card">
+    <div class="card-hdr"><h3>Pembinaan Kearsipan</h3><div class="cpill">PK</div></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>No</th><th>Uraian</th><th>Satuan</th><th>Unit</th><th>Jabatan</th><th class="r">Nilai</th></tr></thead>
+      <tbody>
+        ${row('P1','Penyusunan SOP Kearsipan','SOP per tahun',up('u-up','UP'),jb(['jb-ap','Ahli Pertama'],['jb-am','Ahli Muda']),'up_d37',false,'','calcUP()')}
+        ${row('P2','BIMTEK Pengelolaan Arsip','Laporan per tahun',up('u-up','UP'),jb(['jb-m','Mahir']),'up_d39',false,'','calcUP()')}
+        ${row('P3','BIMTEK SDM Kearsipan','Laporan per tahun',up('u-up','UP'),jb(['jb-am','Ahli Muda']),'up_d40',false,'','calcUP()')}
+        ${row('P4','Penyuluhan Kearsipan','Laporan per tahun',up('u-up','UP'),jb(['jb-am','Ahli Muda']),'up_d41',false,'','calcUP()')}
+        ${row('P5','Fasilitasi Kearsipan','Laporan per tahun',up('u-up','UP'),jb(['jb-am','Ahli Muda']),'up_d42',false,'','calcUP()')}
+        ${row('P6','Monev Sistem Kearsipan','Laporan per tahun',up('u-up','UP'),jb(['jb-am','Ahli Muda']),'up_d43',false,'','calcUP()')}
+      </tbody>
+    </table></div>
+  </div>
+  </div>`;
+}
+
+function renderSIKN_UP() {
+  return `
+  <div class="section" id="sec-sikn-up">
+  <div class="card">
+    <div class="card-hdr"><h3>Pengolahan & Penyajian Arsip menjadi Informasi</h3><div class="cpill">SIKN</div></div>
+    <div class="tbl-wrap"><table>
+      <thead><tr><th>No</th><th>Uraian</th><th>Satuan</th><th>Unit</th><th>Jabatan</th><th class="r">Nilai</th></tr></thead>
+      <tbody>
+        ${row('I1','Identifikasi & pengolahan data Arsip Aktif','Laporan per tahun',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d45',false,'','calcUP()')}
+        ${row('I2','Entry Data Arsip Aktif','Nomor',up('u-up','UP'),jb(['jb-p','Penyelia']),'up_d46',false,'','calcUP()')}
+      </tbody>
+    </table></div>
+  </div>
+  </div>`;
+}
+</script>
+
+<!-- SheetJS untuk export Excel -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<script>
+// ── CHART COLORS ──
+const JAB_COLORS = [
+  '#3b82f6','#22c55e','#eab308','#ef4444','#8b5cf6','#f97316','#14b8a6'
+];
+const JAB_COLORS_LIGHT = [
+  'rgba(59,130,246,.15)','rgba(34,197,94,.15)','rgba(234,179,8,.15)',
+  'rgba(239,68,68,.15)','rgba(139,92,246,.15)','rgba(249,115,22,.15)','rgba(20,184,166,.15)'
+];
+
+let rekapChartInst = null;
+let detailChartInst = null;
+let chartMode = 'stacked';
+
+function setChartMode(mode) {
+  chartMode = mode;
+  document.getElementById('btn-stacked').style.cssText =
+    mode === 'stacked'
+      ? 'font-size:11px;padding:3px 10px;background:var(--accent);color:#fff;border-color:var(--accent);border-radius:4px;border:1px solid;cursor:pointer'
+      : 'font-size:11px;padding:3px 10px;background:linear-gradient(to bottom,#fefefe,#f2f2f2);color:var(--t1);border:1px solid #bbb;border-radius:4px;cursor:pointer';
+  document.getElementById('btn-total').style.cssText =
+    mode === 'total'
+      ? 'font-size:11px;padding:3px 10px;background:var(--accent);color:#fff;border-color:var(--accent);border-radius:4px;border:1px solid;cursor:pointer'
+      : 'font-size:11px;padding:3px 10px;background:linear-gradient(to bottom,#fefefe,#f2f2f2);color:var(--t1);border:1px solid #bbb;border-radius:4px;cursor:pointer';
+  renderCharts();
+}
+
+function renderCharts() {
+  renderRekapChart();
+}
+
+function renderRekapChart() {
+  const canvas = document.getElementById('rekapChart');
+  if (!canvas) return;
+  if (rekapChartInst) { rekapChartInst.destroy(); rekapChartInst = null; }
+  if (!units.length) return;
+
+  const ctx = canvas.getContext('2d');
+
+  if (chartMode === 'total') {
+    // Bar chart: total per jabatan across all units
+    const totals = JAB_KEYS.map((_,i) => 0);
+    units.forEach(u => {
+      const res = calcUnit(u.data||{}, u.type);
+      res.forEach((v,i) => totals[i] += v);
+    });
+
+    rekapChartInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: JAB_LABELS,
+        datasets: [{
+          label: 'Total Kebutuhan (orang)',
+          data: totals,
+          backgroundColor: JAB_COLORS.map(c => c + 'cc'),
+          borderColor: JAB_COLORS,
+          borderWidth: 1.5,
+          borderRadius: 6,
+        }]
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display: false },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} orang` } } },
+        scales: {
+          x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+          y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } },
+               grid: { color: 'rgba(0,0,0,.05)' } }
+        }
+      }
+    });
+
+  } else {
+    // Stacked bar: each unit = one group, stacked by jabatan
+    const datasets = JAB_KEYS.map((key, i) => ({
+      label: JAB_LABELS[i],
+      data: units.map(u => calcUnit(u.data||{}, u.type)[i]),
+      backgroundColor: JAB_COLORS[i] + 'cc',
+      borderColor: JAB_COLORS[i],
+      borderWidth: 1,
+      borderRadius: 3,
+    }));
+
+    rekapChartInst = new Chart(ctx, {
+      type: 'bar',
+      data: {
+        labels: units.map(u => u.name.length > 16 ? u.name.slice(0,14)+'…' : u.name),
+        datasets,
+      },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: {
+          legend: { position: 'bottom', labels: { font: { size: 10 }, boxWidth: 12, padding: 10 } },
+          tooltip: { callbacks: { label: ctx => ` ${ctx.dataset.label}: ${ctx.parsed.y} orang` } }
+        },
+        scales: {
+          x: { stacked: true, grid: { display: false }, ticks: { font: { size: 10 } } },
+          y: { stacked: true, beginAtZero: true, ticks: { stepSize: 1, font: { size: 10 } },
+               grid: { color: 'rgba(0,0,0,.05)' } }
+        }
+      }
+    });
+  }
+}
+
+function renderDetailChart(results) {
+  const canvas = document.getElementById('detailChart');
+  if (!canvas) return;
+  if (detailChartInst) { detailChartInst.destroy(); detailChartInst = null; }
+  const ctx = canvas.getContext('2d');
+
+  detailChartInst = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels: JAB_LABELS,
+      datasets: [{
+        label: 'Kebutuhan (orang)',
+        data: results,
+        backgroundColor: JAB_COLORS.map(c => c + 'cc'),
+        borderColor: JAB_COLORS,
+        borderWidth: 1.5,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false },
+        tooltip: { callbacks: { label: ctx => ` ${ctx.parsed.y} orang` } } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 11 } } },
+        y: { beginAtZero: true, ticks: { stepSize: 1, font: { size: 11 } },
+             grid: { color: 'rgba(0,0,0,.05)' } }
+      }
+    }
+  });
+}
+
+// ── LIVE PREVIEW ──
+let lpVisible = false;   // panel expanded
+let lpActive  = false;   // ada unit aktif & data
+
+function updateLivePreview() {
+  if (!activeUnitId) return;
+  const unit = units.find(u => u.id === activeUnitId);
+  if (!unit) return;
+
+  const snap = {};
+  document.querySelectorAll('.ni:not(.ni-c)').forEach(el => {
+    if (el.id) snap[el.id] = parseFloat(el.value)||0;
+  });
+  const merged = {...(unit.data||{}), ...snap};
+  const res = calcUnit(merged, unit.type);
+  const total = res.reduce((a,b)=>a+b,0);
+
+  // update content
+  const nameEl = document.getElementById('lp-unit-name');
+  const totalEl = document.getElementById('lp-total');
+  const tabTotalEl = document.getElementById('lp-tab-total');
+  if (nameEl) nameEl.textContent = unit.name;
+  if (totalEl) totalEl.textContent = total;
+  if (tabTotalEl) tabTotalEl.textContent = total;
+
+  const rows = document.getElementById('lp-rows');
+  const JB_CLS = ['jb-t','jb-m','jb-p','jb-ap','jb-am','jb-ad','jb-au'];
+  if (rows) rows.innerHTML = res.map((v,i) => v > 0 ? `
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:3px 0;border-bottom:1px solid var(--sep)">
+      <span class="jb ${JB_CLS[i]}" style="font-size:10px">${JAB_LABELS[i]}</span>
+      <span style="font-family:'SF Mono','Menlo',monospace;font-size:12px;font-weight:600;color:var(--t1)">${v}</span>
+    </div>` : '').join('');
+
+  // show tab jika belum visible
+  lpActive = true;
+  const tab = document.getElementById('lp-tab');
+  if (tab) tab.style.display = 'flex';
+  // kalau panel sedang expanded, pastikan tetap expanded
+  if (lpVisible) _showPanel();
+}
+
+function _showPanel() {
+  const panel = document.getElementById('live-preview');
+  const tab   = document.getElementById('lp-tab');
+  if (panel) panel.style.transform = 'translateY(0)';
+  if (tab)   tab.style.display = 'none';
+  lpVisible = true;
+}
+
+function _hidePanel() {
+  const panel = document.getElementById('live-preview');
+  const tab   = document.getElementById('lp-tab');
+  if (panel) panel.style.transform = 'translateY(100%)';
+  if (lpActive && tab) tab.style.display = 'flex';
+  lpVisible = false;
+}
+
+function expandLivePreview() {
+  _showPanel();
+}
+
+function minimizeLivePreview() {
+  _hidePanel();
+}
+
+function hideLivePreviewAll() {
+  const panel = document.getElementById('live-preview');
+  const tab   = document.getElementById('lp-tab');
+  if (panel) panel.style.transform = 'translateY(100%)';
+  if (tab)   tab.style.display = 'none';
+  lpVisible = false; lpActive = false;
+}
+
+// ── END ──
+</script>
+</body>
+</html>
