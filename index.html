@@ -1138,6 +1138,162 @@ tbody tr:not(.tr-sec):not(.tr-comp):hover td {
 .leg { font-size: 10.5px !important; color: rgba(0,0,0,0.38) !important; }
 .leg-d { border-radius: 3px !important; }
 
+/* ══════════════════════════════════════
+   SIDEBAR EXPAND — icon + label inline
+══════════════════════════════════════ */
+.sidebar {
+  width: 48px !important;
+  min-width: 48px !important;
+  background: rgba(250,250,252,0.92) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-right: 1px solid rgba(0,0,0,0.07) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: hidden !important;
+  position: relative !important;
+  z-index: 50 !important;
+  padding: 8px 0 10px !important;
+  flex-shrink: 0 !important;
+  transition: width 0.24s cubic-bezier(0.4,0,0.2,1) !important;
+}
+.sidebar.nsb-open {
+  width: 220px !important;
+}
+
+/* Every sidebar item: icon + label in one row */
+.nsb-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 0 7px;
+  margin-bottom: 2px;
+  flex-shrink: 0;
+  box-sizing: border-box;
+}
+.nsb-item-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 34px;
+  padding: 0 7px;
+  border: none;
+  border-radius: 9px;
+  background: none;
+  cursor: pointer;
+  color: rgba(0,0,0,0.4);
+  font-family: var(--f-text);
+  font-size: 13px;
+  font-weight: 400;
+  text-align: left;
+  transition: background 0.13s, color 0.13s;
+  white-space: nowrap;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+.nsb-item-btn:hover  { background: rgba(0,0,0,0.055); color: rgba(0,0,0,0.75); }
+.nsb-item-btn:active { transform: scale(0.97); }
+.nsb-item-btn.active {
+  background: rgba(0,113,227,0.1);
+  color: #0071e3;
+}
+.nsb-item-btn.active-fill {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 2px 8px rgba(0,113,227,0.22);
+}
+.nsb-item-btn.active-fill:hover { background: var(--accent-hover); }
+
+/* Icon slot — fixed 24px so text always starts same x */
+.nsb-icon {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* Label — hidden when collapsed, visible when open */
+.nsb-label {
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  transition: opacity 0.18s ease, max-width 0.24s cubic-bezier(0.4,0,0.2,1);
+  pointer-events: none;
+  white-space: nowrap;
+}
+.sidebar.nsb-open .nsb-label {
+  opacity: 1;
+  max-width: 160px;
+  pointer-events: auto;
+}
+
+/* Separator */
+.nsb-sep {
+  height: 1px;
+  background: rgba(0,0,0,0.07);
+  margin: 4px 12px;
+  flex-shrink: 0;
+}
+
+/* Section label (NAVIGASI, UNIT KERJA) */
+.nsb-sec-label {
+  font-family: var(--f-display);
+  font-size: 9.5px; font-weight: 700;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(0,0,0,0.28);
+  padding: 8px 14px 2px;
+  display: block;
+  opacity: 0;
+  max-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  transition: opacity 0.18s ease, max-width 0.24s cubic-bezier(0.4,0,0.2,1);
+}
+.sidebar.nsb-open .nsb-sec-label {
+  opacity: 1;
+  max-width: 160px;
+}
+
+/* Unit dots (collapsed) vs unit rows (expanded) */
+.nsb-dot-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 0;
+  overflow: hidden;
+}
+.sidebar.nsb-open .nsb-dot-wrap { display: none; }
+
+.nsb-unit-rows { display: none; }
+.sidebar.nsb-open .nsb-unit-rows {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 220px;
+  scrollbar-width: none;
+}
+.nsb-unit-rows::-webkit-scrollbar { display: none; }
+
+.nsb-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: rgba(0,0,0,0.18);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.12s;
+  flex-shrink: 0;
+  border: none; padding: 0;
+}
+.nsb-dot:hover   { background: #0071e3; transform: scale(1.3); }
+.nsb-dot.active  { background: #0071e3; transform: scale(1.25); }
+.nsb-dot.dot-upuk { background: rgba(94,92,230,0.55); }
+.nsb-dot.dot-upuk.active { background: #5e5ce6; }
+
 </style>
 </head>
 <body>
@@ -1163,28 +1319,77 @@ tbody tr:not(.tr-sec):not(.tr-comp):hover td {
 
 <!-- APP -->
 <div class="app">
-  <aside class="sidebar">
-    <div class="sb-header">
-      <div class="sb-title">Menu</div>
-      <button class="sb-nav-btn" id="nav-wiki" onclick="goMain('wiki')">
-        <div class="sb-ico" style="background:rgba(168,85,247,.12)">📖</div> Deskripsi Informasi Kearsipan
-      </button>
-      <button class="sb-nav-btn active" id="nav-input" onclick="goMain('input')">
-        <div class="sb-ico ico-b">⌗</div> Input per Unit Kerja
-      </button>
-      <button class="sb-nav-btn" id="nav-rekap" onclick="goMain('rekap')">
-        <div class="sb-ico ico-g">◈</div> Rekap Kebutuhan
+  <!-- SIDEBAR -->
+  <aside class="sidebar" id="main-sidebar">
+
+    <!-- Toggle collapse/expand -->
+    <button class="nsb-item-btn" onclick="nsbToggle()" title="Toggle sidebar">
+      <span class="nsb-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="3" width="12" height="1.5" rx=".75" fill="currentColor"/><rect x="2" y="7.25" width="12" height="1.5" rx=".75" fill="currentColor"/><rect x="2" y="11.5" width="12" height="1.5" rx=".75" fill="currentColor"/></svg></span>
+      <span class="nsb-label"></span>
+    </button>
+
+    <div class="nsb-sep"></div>
+
+    <!-- Nav section label (only visible when open) -->
+    <span class="nsb-sec-label">Navigasi</span>
+
+    <!-- Wiki -->
+    <button class="nsb-item-btn" id="nav-wiki" onclick="goMain('wiki')">
+      <span class="nsb-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="7" cy="7" r="4.5" stroke="currentColor" stroke-width="1.4"/><line x1="10.5" y1="10.5" x2="13.5" y2="13.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      <span class="nsb-label">Deskripsi Informasi Kearsipan</span>
+    </button>
+
+    <!-- Input -->
+    <button class="nsb-item-btn" id="nav-input" onclick="goMain('input')" class="nsb-item-btn active">
+      <span class="nsb-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="2.5" width="12" height="3" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="6.5" width="12" height="3" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="2" y="10.5" width="12" height="3" rx="1" stroke="currentColor" stroke-width="1.3"/></svg></span>
+      <span class="nsb-label">Input per Unit Kerja</span>
+    </button>
+
+    <!-- Rekap -->
+    <button class="nsb-item-btn" id="nav-rekap" onclick="goMain('rekap')">
+      <span class="nsb-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><rect x="2" y="8" width="3" height="6" rx="1" fill="currentColor" opacity=".6"/><rect x="6.5" y="5" width="3" height="9" rx="1" fill="currentColor" opacity=".8"/><rect x="11" y="2" width="3" height="12" rx="1" fill="currentColor"/></svg></span>
+      <span class="nsb-label">Rekap Kebutuhan</span>
+    </button>
+
+    <div class="nsb-sep"></div>
+
+    <!-- Unit Kerja section -->
+    <div style="display:flex;align-items:center;width:100%">
+      <span class="nsb-sec-label" style="flex:1">Unit Kerja</span>
+      <button class="nsb-item-btn" onclick="openModal()" title="Tambah Unit Kerja"
+        style="min-height:28px;padding:0 7px;flex-shrink:0;width:auto">
+        <span class="nsb-icon" style="width:16px"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="5.5" x2="8" y2="10.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><line x1="5.5" y1="8" x2="10.5" y2="8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+        <span class="nsb-label" style="font-size:11px;font-weight:600;color:var(--accent)">Tambah</span>
       </button>
     </div>
-    <div class="sb-units" id="sb-units" style="display:none">
-      <div style="height:1px;background:var(--sep);margin:0 12px 8px"></div>
-      <div class="sb-units-hdr">
-        <span class="sb-units-label">Unit Kerja</span>
-        <button class="sb-add-btn" onclick="openModal()">+ Tambah</button>
-      </div>
-      <div id="unit-list"></div>
-    </div>
+
+    <!-- Dots (collapsed) -->
+    <div class="nsb-dot-wrap" id="nsb-unit-dots"></div>
+
+    <!-- Unit rows (expanded) -->
+    <div class="nsb-unit-rows" id="nsb-unit-rows"></div>
+
+    <div style="flex:1"></div>
+
+    <div class="nsb-sep"></div>
+
+    <!-- Export -->
+    <button class="nsb-item-btn" onclick="exportDataFile()" title="Export Data">
+      <span class="nsb-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2v8M5 7l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 12h10" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></span>
+      <span class="nsb-label">Export Data</span>
+    </button>
+    <button class="nsb-item-btn" onclick="exportExcel()" title="Export Excel">
+      <span class="nsb-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M4 5h5M4 8h5M4 11h3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M10.5 9.5l2 2-2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><rect x="2" y="2" width="12" height="12" rx="2" stroke="currentColor" stroke-width="1.3"/></svg></span>
+      <span class="nsb-label">Export Excel</span>
+    </button>
+
   </aside>
+
+  <!-- hidden stubs so goMain's querySelector still works -->
+  <div style="display:none">
+    <div id="sb-units"></div>
+    <div id="unit-list"></div>
+  </div>
 
   <!-- ── INPUT PAGE ── -->
   <div id="page-input" class="page active">
@@ -3334,6 +3539,7 @@ function importDataFile(input) {
         pg.style.opacity = '1';
       });
     }
+    // nav active states handled by new nsbRender patch
   };
 
   // — Unit item stagger animation on sidebar render —
@@ -3439,6 +3645,95 @@ function importDataFile(input) {
   // — Initial reveal —
   setTimeout(initReveal, 300);
 
+})();
+
+// ══════════════════════════════════════
+// SIDEBAR EXPAND/COLLAPSE
+// ══════════════════════════════════════
+(function() {
+  let _open = false;
+
+  function nsbSetOpen(open) {
+    _open = open;
+    const sb = document.getElementById('main-sidebar');
+    if (!sb) return;
+    if (open) sb.classList.add('nsb-open');
+    else sb.classList.remove('nsb-open');
+  }
+
+  window.nsbToggle = function() { nsbSetOpen(!_open); };
+
+  // Render unit dots (collapsed) + unit rows (expanded)
+  function nsbRender() {
+    const dotsWrap = document.getElementById('nsb-unit-dots');
+    const rowsWrap = document.getElementById('nsb-unit-rows');
+    if (!dotsWrap || !rowsWrap) return;
+    const uList = (typeof units !== 'undefined') ? units : [];
+    const curId = (typeof activeUnitId !== 'undefined') ? activeUnitId : '';
+
+    // dots
+    dotsWrap.innerHTML = '';
+    uList.forEach(u => {
+      const b = document.createElement('button');
+      b.className = 'nsb-dot' + (u.type==='upuk'?' dot-upuk':'') + (u.id===curId?' active':'');
+      b.title = u.name;
+      b.onclick = () => { selectUnit(u.id); goMain('input'); };
+      dotsWrap.appendChild(b);
+    });
+
+    // rows
+    rowsWrap.innerHTML = '';
+    uList.forEach(u => {
+      const isActive = u.id === curId;
+      const dotCls   = u.type === 'upuk' ? 'dot-upuk' : 'dot-up';
+      const badge    = u.type === 'upuk' ? 'UP+UK' : 'UP';
+      const bColor   = u.type === 'upuk' ? '#5e5ce6' : '#0071e3';
+      const bBg      = u.type === 'upuk' ? 'rgba(94,92,230,.1)' : 'rgba(0,113,227,.1)';
+      const b = document.createElement('button');
+      b.className = 'nsb-item-btn' + (isActive ? ' active-fill' : '');
+      b.style.cssText = 'gap:8px;padding:0 7px;min-height:34px;';
+      b.innerHTML = `
+        <span class="nsb-icon" style="width:20px;height:20px">
+          <span class="nsb-dot ${dotCls}" style="pointer-events:none"></span>
+        </span>
+        <span class="nsb-label" style="flex:1;font-size:12.5px;max-width:unset;opacity:1;overflow:hidden;text-overflow:ellipsis">${u.name}</span>
+        <span style="font-size:9px;font-weight:700;padding:1px 5px;border-radius:4px;flex-shrink:0;
+          background:${isActive?'rgba(255,255,255,.22)':bBg};
+          color:${isActive?'#fff':bColor}">${badge}</span>`;
+      b.onclick = () => { selectUnit(u.id); goMain('input'); };
+      rowsWrap.appendChild(b);
+    });
+  }
+  window.nsbRender = nsbRender;
+
+  // Patch goMain to update active states on nav buttons
+  const _origGoMain = window.goMain;
+  window.goMain = function(id) {
+    if (_origGoMain) _origGoMain.apply(this, arguments);
+    ['wiki','input','rekap'].forEach(p => {
+      const b = document.getElementById('nav-' + p);
+      if (!b) return;
+      if (p === id) b.classList.add('active');
+      else b.classList.remove('active');
+    });
+    setTimeout(nsbRender, 20);
+  };
+
+  // Patch renderUnitList
+  const _origRender = window.renderUnitList;
+  window.renderUnitList = function() {
+    if (_origRender) _origRender.apply(this, arguments);
+    nsbRender();
+  };
+
+  // Patch selectUnit to refresh active
+  const _origSelect = window.selectUnit;
+  window.selectUnit = function(id) {
+    if (_origSelect) _origSelect.apply(this, arguments);
+    setTimeout(nsbRender, 20);
+  };
+
+  setTimeout(nsbRender, 300);
 })();
 
 </script>
